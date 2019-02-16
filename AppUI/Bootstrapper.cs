@@ -1,5 +1,7 @@
 ﻿using AppUI.ViewModels;
 using Caliburn.Micro;
+using DataAccess;
+using DataAccess.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -35,6 +37,9 @@ namespace AppUI
             _container
                 .Singleton<IWindowManager, WindowManager>()
                 .Singleton<IEventAggregator, EventAggregator>();
+
+            _container.PerRequest<ISqliteDataAccess, SqliteDataAccess>();
+            _container.PerRequest<IQueries, Queries>();
 
             GetType().Assembly.GetTypes()
                 .Where(type => type.IsClass)
