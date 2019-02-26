@@ -10,17 +10,9 @@
         <Style x:Key="TextBlockTrigger" TargetType="TextBlock">
             <Setter Property="Foreground" Value="Red"/>
             <Style.Triggers>
-                <DataTrigger Binding="{Binding ElementName=Type ,Path=Text}" Value="Wpłata">
+                <DataTrigger Binding="{Binding TransactionType.Type}" Value="Wpłata">
                     <Setter Property="Foreground" Value="Green"/>
                     <Setter Property="Margin" Value="4,0,0,0"/>
-                </DataTrigger>
-            </Style.Triggers>
-        </Style>
-        <Style x:Key="ExpandTrigger" TargetType="DockPanel">
-            <Setter Property="Visibility" Value="Collapsed"/>
-            <Style.Triggers>
-                <DataTrigger Binding="{Binding ElementName=ExpandBtn, Path=IsChecked}" Value="True">
-                    <Setter Property="Visibility" Value="Visible"/>
                 </DataTrigger>
             </Style.Triggers>
         </Style>
@@ -28,98 +20,57 @@
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="auto"/>
-            <ColumnDefinition/>
+            <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"/>
-            <RowDefinition Height="auto"/>
             <RowDefinition/>
+
         </Grid.RowDefinitions>
         
-        <Border Padding="10" Background="DodgerBlue" Grid.Row="0" Grid.RowSpan="3">
+        <Border Padding="10" Background="DodgerBlue" Grid.Row="0" Grid.RowSpan="2">
         <StackPanel Background="DodgerBlue" >
-            <Button Content="Dodaj wpis"/>
-            <TextBlock Text="Filtry" HorizontalAlignment="Center" FontSize="16" Margin="0,0,0,10"/>
+            <Button x:Name="ShowAddTransactionWindow" Content="Dodaj wpis"/>
+                
+                <TextBlock Text="Filtry" HorizontalAlignment="Center" FontSize="16" Margin="0,0,0,10"/>
             <TextBlock Text="Rodzaj transakcji"/>
-            <ComboBox x:Name="TransactionType" SelectedIndex="0"/>
+            <ComboBox x:Name="TransactionType" SelectedIndex="0" DisplayMemberPath="Type" SelectedItem="{Binding Path=SelectedTransaction, Mode=OneWayToSource}"/>
             <TextBlock Text="Użytkownicy"/>
-            <ComboBox ItemsSource="{Binding Users}">
-                <ComboBox.ItemTemplate>
-                    <DataTemplate>
-                        <TextBlock Text="{Binding FullName}"/>
-                    </DataTemplate>
-                </ComboBox.ItemTemplate>
-            </ComboBox>
+            <ComboBox x:Name="Users" DisplayMemberPath="FullName" SelectedIndex="0" SelectedItem="{Binding Path=SelectedUser, Mode=OneWayToSource}"/>
             <TextBlock Text="Data"/>
             <DockPanel>
                 <TextBlock Text="Od"/>
-                <DatePicker/>
+                <DatePicker x:Name="FromDate" SelectedDateFormat="Short"/>
                 <TextBlock Text="Do"/>
-                <DatePicker/>
+                <DatePicker x:Name="ToDate" SelectedDateFormat="Short"/>
             </DockPanel>
-        </StackPanel>
+            <Button x:Name="RefreshBtn" Content="Filtruj"/>
+            </StackPanel>
         </Border>
         <DockPanel Grid.Column="1" Grid.Row="0" Background="RoyalBlue">
             <TextBox Margin="10"/>
         </DockPanel>
-        <Border Grid.Column="1" Grid.Row="1" BorderBrush="LightGray" BorderThickness="0,0,0,1">
-            <Grid Margin="5">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="20"/>
-                    <ColumnDefinition Width="65"/>
-                    <ColumnDefinition Width="350"/>
-                    <ColumnDefinition Width="50"/>
-                    <ColumnDefinition Width="50"/>
-                    <ColumnDefinition Width="auto"/>
-                    <ColumnDefinition Width="*"/>
-                </Grid.ColumnDefinitions>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="auto"/>
-                    <RowDefinition Height="auto"/>
-                </Grid.RowDefinitions>
-                <TextBlock Grid.Row="0" Grid.Column="1" Margin="10,0,0,0" Text="Data"/>
-                <TextBlock Grid.Row="0" Grid.Column="2" Margin="10,0,0,0" Text="Tytuł"/>
-                <TextBlock Grid.Row="0" Grid.Column="3" Text="Kwota"/>
-                <TextBlock Grid.Row="0" Grid.Column="4" Text="Saldo"/>
-                <TextBlock Grid.Row="0" Grid.Column="5" Text="Typ transakcji"/>
-                <TextBlock Grid.Row="0" Grid.Column="6" Margin="10,0,0,0" Text="Użytkownik"/>
-            </Grid>
-        </Border>
-        <ScrollViewer Grid.Column="1" Grid.Row="2" VerticalScrollBarVisibility="Auto">
-            <ItemsControl x:Name="TransactionFull">
-                <ItemsControl.ItemTemplate>
+        
+        <ScrollViewer Grid.Column="1" Grid.Row="1" VerticalScrollBarVisibility="Auto">
+            <DataGrid x:Name="TransactionFull" ItemsSource="{Binding Path=TransactionFull, UpdateSourceTrigger=PropertyChanged}" AutoGenerateColumns="False" CanUserAddRows="False" AlternatingRowBackground="#FFC8CFD3">
+                <DataGrid.Columns>                  
+                    <DataGridTextColumn Header="Id" Binding="{Binding TransactionFullId}"/>
+                    <DataGridTextColumn Header="Data" Binding="{Binding Date}"/>
+                    <DataGridTextColumn Header="Tytuł" Width="300" ElementStyle="{StaticResource TextBlockTrigger}" Binding="{Binding Title}"/>
+                    <DataGridTextColumn Header="Kwota" Binding="{Binding Amount}" ElementStyle="{StaticResource TextBlockTrigger}" />
+                    <DataGridTextColumn Header="Saldo" Binding="{Binding Balance}"/>
+                    <DataGridTextColumn Header="Typ Transakcji" Binding="{Binding TransactionType.Type}"/>
+                    <DataGridTextColumn Header="Użytkownik" Binding="{Binding Users.FullName}"/>
+                </DataGrid.Columns>
+                <DataGrid.RowDetailsTemplate>
                     <DataTemplate>
-                        <Border BorderBrush="LightGray" BorderThickness="0,0,0,1">
-                            <Grid Margin="5">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="20"/>
-                                    <ColumnDefinition Width="auto"/>
-                                    <ColumnDefinition Width="350"/>
-                                    <ColumnDefinition Width="50"/>
-                                    <ColumnDefinition Width="50"/>
-                                    <ColumnDefinition Width="80"/>
-                                    <ColumnDefinition Width="*"/>
-                                </Grid.ColumnDefinitions>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="auto"/>
-                                    <RowDefinition Height="auto"/>
-                                </Grid.RowDefinitions>
-                                <ToggleButton x:Name="ExpandBtn" Grid.Column="0"/>
-                                <TextBlock Grid.Row="0" Grid.Column="1" Margin="10,0,0,0" Text="{Binding Date}"/>
-                                <TextBlock Grid.Row="0" Grid.Column="2" Style="{StaticResource TextBlockTrigger}" Margin="10,0,0,0" Text="{Binding Title}"/>
-                                <TextBlock Grid.Row="0" Grid.Column="3" Style="{StaticResource TextBlockTrigger}" Text="{Binding Amount}"/>
-                                <TextBlock Grid.Row="0" Grid.Column="4" Text="{Binding Balance}"/>
-                                <TextBlock Grid.Row="0" Grid.Column="5" x:Name="Type" Text="{Binding TransactionType.Type}"/>
-                                <TextBlock Grid.Row="0" Grid.Column="6" Text="{Binding Users.FullName}"/>
-                                <DockPanel Grid.Row="1" Grid.Column="2" Grid.ColumnSpan="4" Margin="5" Style="{StaticResource ExpandTrigger}" LastChildFill="False">
-                                    <TextBlock DockPanel.Dock="Left" Text="{Binding TransactionInfo.Company}"/>
-                                    <TextBlock Margin="250,0,0,0" Text="{Binding TransactionInfo.Invoice}"/>
-                                </DockPanel>
-                            </Grid>
-                        </Border>
+                        <DockPanel x:Name="DetailPanel">
+                            <TextBlock Text="{Binding TransactionInfo.Company}"/>
+                            <TextBlock Text="{Binding TransactionInfo.Invoice}"/>
+                        </DockPanel>
                     </DataTemplate>
-                </ItemsControl.ItemTemplate>
-            </ItemsControl>
+                </DataGrid.RowDetailsTemplate>                       
+            </DataGrid>
         </ScrollViewer>
     </Grid>
 </Window>

@@ -1,7 +1,10 @@
-﻿using AppUI.ViewModels;
+﻿using AppUI.Interfaces;
+using AppUI.Models;
+using AppUI.ViewModels;
 using Caliburn.Micro;
 using DataAccess;
 using DataAccess.Interfaces;
+using DataAccess.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -72,7 +75,6 @@ namespace AppUI
         {
             DisplayRootViewFor<ShellViewModel>();
         }
-
 
         #endregion
     }

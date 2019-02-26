@@ -52,6 +52,8 @@
   <ItemGroup>
     <Compile Include="Interfaces\ISqliteDataAccess.cs" />
     <Compile Include="Interfaces\IQueries.cs" />
+    <Compile Include="Models\InsertTransactionModel.cs" />
+    <Compile Include="Models\InsertTransactionModelInfo.cs" />
     <Compile Include="Models\TransactionFullModel.cs" />
     <Compile Include="Models\TransactionInfoModel.cs" />
     <Compile Include="Models\TransactionTypeModel.cs" />

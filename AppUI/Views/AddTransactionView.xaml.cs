@@ -5,7 +5,6 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
@@ -16,11 +15,11 @@ using System.Windows.Shapes;
 namespace AppUI.Views
 {
     /// <summary>
-    /// Interaction logic for ShellView.xaml
+    /// Interaction logic for AddTransactionView.xaml
     /// </summary>
-    public partial class ShellView : Window
+    public partial class AddTransactionView : Window
     {
-        public ShellView()
+        public AddTransactionView()
         {
             InitializeComponent();
         }

@@ -1,4 +1,6 @@
-﻿using Caliburn.Micro;
+﻿using AppUI.Interfaces;
+using AppUI.Models;
+using Caliburn.Micro;
 using DataAccess;
 using DataAccess.Interfaces;
 using DataAccess.Models;
@@ -13,6 +15,8 @@ namespace AppUI.ViewModels
 {
     public class ShellViewModel : Screen
     {
+        #region Constructor
+
         public ShellViewModel(IQueries queries)
         {
             _queries = queries;
@@ -21,25 +25,75 @@ namespace AppUI.ViewModels
             GetUsers();
         }
 
+        #endregion
+
+        #region Interfaces
+
         private IQueries _queries;
 
+        #endregion
+
+        #region Collections
+
         public BindableCollection<TransactionFullModel> TransactionFull { get; set; }
-        public BindableCollection<string> TransactionType { get; set; }
+        public BindableCollection<TransactionTypeModel> TransactionType { get; set; }
         public BindableCollection<UsersModel> Users { get; set; }
 
-        private string _amountOnScreen;
+        #endregion
 
-        public string AmountOnScreen
+        #region Private properties
+
+        private DateTime _fromDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
+        private DateTime _toDate = DateTime.Now;
+        private UsersModel _selectedUser;
+        private TransactionTypeModel _selectedTransaction;
+
+        #endregion
+
+        #region Public properties
+
+        public DateTime FromDate
         {
-            get { return _amountOnScreen; }
-            set { _amountOnScreen = value; NotifyOfPropertyChange(() => AmountOnScreen); }
+            get { return _fromDate; }
+            set { _fromDate = value; }
         }
 
+        public TransactionTypeModel SelectedTransaction
+        {
+            get { return _selectedTransaction; }
+            set { _selectedTransaction = value; }
+        }
+
+        public UsersModel SelectedUser
+        {
+            get { return _selectedUser; }
+            set { _selectedUser = value; }
+        }
+
+        public DateTime ToDate
+        {
+            get { return _toDate; }
+            set { _toDate = value; }
+        }
+
+        #endregion
+
+        #region Methods for data acces
 
         private void GetTransactions()
         {
-            List<TransactionFullModel> model = new List<TransactionFullModel>(_queries.SelectTransactionFull());            
-            TransactionFull = new BindableCollection<TransactionFullModel>();
+            string filters = $"{UseTransactionTypeFilter()} {UseUsersFilter()}";
+            
+            List<TransactionFullModel> model = new List<TransactionFullModel>(_queries.SelectTransactionFull(FromDate, ToDate, filters));
+            model.Reverse();
+            if (TransactionFull == null)
+            {
+                TransactionFull = new BindableCollection<TransactionFullModel>();
+            }
+            else
+            {
+                TransactionFull.Clear();
+            }
 
             foreach (var item in model)
             {
@@ -48,20 +102,51 @@ namespace AppUI.ViewModels
                     string amount = $"-{item.Amount}";
                     item.Amount = Convert.ToDecimal(amount);
                 }
+                if (item.TransactionInfo == null) item.TransactionInfo = new TransactionInfoModel();
                 item.TransactionInfo.Company = $"Nazwa firmy: {item.TransactionInfo.Company}";
                 item.TransactionInfo.Invoice = $"Numer faktury: {item.TransactionInfo.Invoice}";
                 TransactionFull.Add(item);
-            }
+            }            
         }
+
+        private string UseTransactionTypeFilter()
+        {
+            if (_selectedTransaction != null)
+            {
+                if (_selectedTransaction.Type != "Wszystkie")
+                {
+                    string filter = $"AND TransactionType.TransactionTypeId = '{SelectedTransaction.TransactionTypeId}'";
+
+                    return filter;
+                } 
+            }
+
+            return null;
+        }
+
+        private string UseUsersFilter()
+        {
+            if(_selectedUser != null)
+            {
+                if(_selectedUser.FullName != "Wszyscy użytkownicy")
+                {
+                    string filter = $"AND Users.UserId = '{_selectedUser.UserId}'";
+
+                    return filter;
+                }
+            }
+
+            return null;
+        }         
 
         private void GetTransactionType()
         {
             List<TransactionTypeModel> model = new List<TransactionTypeModel>(_queries.SelectTransactionType());
-            TransactionType = new BindableCollection<string>();
-
+            TransactionType = new BindableCollection<TransactionTypeModel>();
+            TransactionType.Add(new TransactionTypeModel { Type = "Wszystkie" });
             foreach (var item in model)
             {
-                TransactionType.Add(item.Type);
+                TransactionType.Add(item);
             }
         }
 
@@ -69,11 +154,37 @@ namespace AppUI.ViewModels
         {
             List<UsersModel> model = new List<UsersModel>(_queries.SelectUsers());
             Users = new BindableCollection<UsersModel>();
-
+            Users.Add(new UsersModel { FirstName = "Wszyscy", LastName= "użytkownicy" });
             foreach (var item in model)
             {
                 Users.Add(item);
             }
         }
+
+        #endregion
+
+        #region Methods
+
+        public void RefreshBtn()
+        {
+            GetTransactions();
+        }
+
+        public void ShowAddTransactionWindow()
+        {
+            AddTransactionModel model = new AddTransactionModel
+            {
+                Balance = _queries.SelectLastBalance(),
+                Users = this.Users,
+                TransactionType = this.TransactionType
+            };
+
+            model.Users.RemoveAt(0);
+            model.TransactionType.RemoveAt(0);
+            WindowManager wm = new WindowManager();
+            wm.ShowWindow(new AddTransactionViewModel(model, _queries));
+        }
+        
+        #endregion
     }
 }
