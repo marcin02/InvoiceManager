@@ -74,6 +74,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Bootstrapper.cs" />
+    <Compile Include="Converters\IsNotNullConverter.cs" />
     <Compile Include="Models\AddTransactionModel.cs" />
     <Compile Include="Interfaces\IAddTransactionModel.cs" />
     <Compile Include="ViewModels\AddTransactionViewModel.cs" />
@@ -129,7 +130,9 @@
       <SubType>Designer</SubType>
     </None>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Resource Include="Resources\iconfinder_icon-111-search_314807.png" />
+  </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DataAccess\DataAccess.csproj">
       <Project>{166ed11b-8a28-4b9f-aa38-490ee554f9a9}</Project>

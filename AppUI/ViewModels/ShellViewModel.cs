@@ -103,8 +103,8 @@ namespace AppUI.ViewModels
                     item.Amount = Convert.ToDecimal(amount);
                 }
                 if (item.TransactionInfo == null) item.TransactionInfo = new TransactionInfoModel();
-                item.TransactionInfo.Company = $"Nazwa firmy: {item.TransactionInfo.Company}";
-                item.TransactionInfo.Invoice = $"Numer faktury: {item.TransactionInfo.Invoice}";
+                //item.TransactionInfo.Company = $"Nazwa firmy: {item.TransactionInfo.Company}";
+                //item.TransactionInfo.Invoice = $"Numer faktury: {item.TransactionInfo.Invoice}";
                 TransactionFull.Add(item);
             }            
         }

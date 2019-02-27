@@ -63,6 +63,16 @@ namespace AppUI.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap iconfinder_icon_111_search_314807 {
+            get {
+                object obj = ResourceManager.GetObject("iconfinder_icon_111_search_314807", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap iconfinder_menu_alt_134216 {
             get {
                 object obj = ResourceManager.GetObject("iconfinder_menu_alt_134216", resourceCulture);

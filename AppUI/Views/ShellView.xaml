@@ -4,16 +4,122 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:AppUI.Views"
+        xmlns:converter="clr-namespace:AppUI.Converters"
         mc:Ignorable="d"
-        Title="ShellView" Height="450" Width="1000" FontFamily="Calibri">
+        Title="Menedżer transakcji" Height="1000" Width="1050" WindowStartupLocation="CenterScreen" FontFamily="Calibri">
     <Window.Resources>
+        <converter:IsNotNullConverter x:Key="IsNotNull"/>
+        <Style TargetType="TextBlock">
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontFamily" Value="Palanquin"/>
+            <Setter Property="FontWeight" Value="DemiBold"/>
+        </Style>
+        <Style TargetType="TextBox">
+            <Setter Property="Height" Value="20"/>
+            <Setter Property="Background" Value="#FFB695DC"/>
+            <Setter Property="Foreground" Value="#FFDBCDEE"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type TextBox}">
+                        <Border x:Name="border" 
+                                CornerRadius="8"
+                                Background="{TemplateBinding Background}">
+                            <DockPanel>
+                                <Image Source="/InvoiceManager;component/Resources/iconfinder_icon-111-search_314807.png"/>
+                                <ScrollViewer x:Name="PART_ContentHost"
+                                              Focusable="False"
+                                              HorizontalScrollBarVisibility="Hidden"
+                                              VerticalScrollBarVisibility="Hidden"/>                                
+                            </DockPanel>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="AdditionalInfoStyle" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="10.5"/>
+            <Setter Property="Foreground" Value="#FFB4B4B6"/>
+        </Style>
+        <Style x:Key="AdditonalInfo" TargetType="DockPanel">
+            <Setter Property="Visibility" Value="Visible"/>
+            <Setter Property="Margin" Value="0,10,0,0"/>
+            <Setter Property="LastChildFill" Value="False"/>
+            <Style.Triggers>
+                <MultiDataTrigger>
+                    <MultiDataTrigger.Conditions>
+                        <Condition Binding="{Binding TransactionInfo.Company, Converter={StaticResource IsNotNull}}" Value="True"/>
+                        <Condition Binding="{Binding TransactionInfo.Invoice, Converter={StaticResource IsNotNull}}" Value="True"/>
+                    </MultiDataTrigger.Conditions>
+                    <Setter Property="Visibility" Value="Collapsed"/>
+                </MultiDataTrigger>
+            </Style.Triggers>
+        </Style>
         <Style x:Key="TextBlockTrigger" TargetType="TextBlock">
-            <Setter Property="Foreground" Value="Red"/>
+            <Setter Property="Foreground" Value="#E83C3C"/>
             <Style.Triggers>
                 <DataTrigger Binding="{Binding TransactionType.Type}" Value="Wpłata">
                     <Setter Property="Foreground" Value="Green"/>
                     <Setter Property="Margin" Value="4,0,0,0"/>
                 </DataTrigger>
+            </Style.Triggers>
+        </Style>
+        <Style x:Key="DataGridStyle" TargetType="DataGrid">
+            <Setter Property="ColumnHeaderStyle" Value="{DynamicResource HeaderStyle}"/>
+            <Setter Property="RowStyle" Value="{DynamicResource RowStyle}"/>
+            <Setter Property="CellStyle" Value="{DynamicResource CellStyle}"/>
+            <Setter Property="VerticalGridLinesBrush" Value="#FFD9DFE5"/>
+            <Setter Property="GridLinesVisibility" Value="None"/>
+            <Setter Property="Background" Value="#FFF1F5F8"/>
+            <Setter Property="AutoGenerateColumns" Value="False"/>
+            <Setter Property="CanUserAddRows" Value="False"/>
+            <Setter Property="RowHeaderWidth" Value="0"/>
+            <Setter Property="IsReadOnly" Value="True"/>
+            <Setter Property="CanUserResizeRows" Value="False"/>
+        </Style>
+        <Style x:Key="HeaderStyle" TargetType="DataGridColumnHeader">
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="Padding" Value="10"/>
+            <Setter Property="Background" Value="#FFF0F5F9"/>
+            <Setter Property="FontFamily" Value="OpenSans"/>
+            <Setter Property="FontSize" Value="10"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Foreground" Value="#FF323232"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="BorderBrush" Value="#FFD9DFE5"/>
+            <Setter Property="Margin" Value="0,0,0,5"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#FF898787"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        <Style x:Key="RowStyle" TargetType="DataGridRow">
+            <Setter Property="Foreground" Value="#FF767B9F"/>
+            <Setter Property="BorderBrush" Value="Transparent" />
+            <Setter Property="Background" Value="White" />
+            <Setter Property="FontFamily" Value="OpenSans"/>
+            <Setter Property="Margin" Value="0,0,0,5"/>
+            <Style.Triggers>
+                <Trigger Property="IsSelected" Value="True">
+                    <Setter Property="Background" Value="White" />
+                    <Setter Property="BorderBrush" Value="Transparent" />
+                    <Setter Property="Foreground" Value="#FF767B9F"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        <Style x:Key="CellStyle" TargetType="DataGridCell">
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="TextBlock.TextAlignment" Value="Center"/>
+            <Setter Property="Background" Value="White" />
+            <Setter Property="Foreground" Value="#FF767B9F"/>
+            <Style.Triggers>
+                <Trigger Property="IsSelected" Value="True">
+                    <Setter Property="Background" Value="White" />
+                    <Setter Property="BorderBrush" Value="Transparent" />
+                    <Setter Property="Foreground" Value="#FF767B9F"/>
+                </Trigger>
             </Style.Triggers>
         </Style>
     </Window.Resources>
@@ -28,11 +134,11 @@
 
         </Grid.RowDefinitions>
         
-        <Border Padding="10" Background="DodgerBlue" Grid.Row="0" Grid.RowSpan="2">
-        <StackPanel Background="DodgerBlue" >
+        <Border Padding="10" Background="#FF464B71" Grid.Row="0" Grid.RowSpan="2">
+        <StackPanel Background="#FF464B71">
             <Button x:Name="ShowAddTransactionWindow" Content="Dodaj wpis"/>
                 
-                <TextBlock Text="Filtry" HorizontalAlignment="Center" FontSize="16" Margin="0,0,0,10"/>
+                <TextBlock Text="Filtry" HorizontalAlignment="Center" FontSize="16" Margin="0,0,0,10" Foreground="#FF4B5374"/>
             <TextBlock Text="Rodzaj transakcji"/>
             <ComboBox x:Name="TransactionType" SelectedIndex="0" DisplayMemberPath="Type" SelectedItem="{Binding Path=SelectedTransaction, Mode=OneWayToSource}"/>
             <TextBlock Text="Użytkownicy"/>
@@ -47,29 +153,35 @@
             <Button x:Name="RefreshBtn" Content="Filtruj"/>
             </StackPanel>
         </Border>
-        <DockPanel Grid.Column="1" Grid.Row="0" Background="RoyalBlue">
+        <DockPanel Grid.Column="1" Grid.Row="0" Background="#FFAB80D4">
             <TextBox Margin="10"/>
         </DockPanel>
         
         <ScrollViewer Grid.Column="1" Grid.Row="1" VerticalScrollBarVisibility="Auto">
-            <DataGrid x:Name="TransactionFull" ItemsSource="{Binding Path=TransactionFull, UpdateSourceTrigger=PropertyChanged}" AutoGenerateColumns="False" CanUserAddRows="False" AlternatingRowBackground="#FFC8CFD3">
+            <DataGrid x:Name="TransactionFull" Style="{StaticResource DataGridStyle}" ItemsSource="{Binding Path=TransactionFull, UpdateSourceTrigger=PropertyChanged}">
                 <DataGrid.Columns>                  
-                    <DataGridTextColumn Header="Id" Binding="{Binding TransactionFullId}"/>
-                    <DataGridTextColumn Header="Data" Binding="{Binding Date}"/>
-                    <DataGridTextColumn Header="Tytuł" Width="300" ElementStyle="{StaticResource TextBlockTrigger}" Binding="{Binding Title}"/>
-                    <DataGridTextColumn Header="Kwota" Binding="{Binding Amount}" ElementStyle="{StaticResource TextBlockTrigger}" />
-                    <DataGridTextColumn Header="Saldo" Binding="{Binding Balance}"/>
-                    <DataGridTextColumn Header="Typ Transakcji" Binding="{Binding TransactionType.Type}"/>
-                    <DataGridTextColumn Header="Użytkownik" Binding="{Binding Users.FullName}"/>
-                </DataGrid.Columns>
-                <DataGrid.RowDetailsTemplate>
-                    <DataTemplate>
-                        <DockPanel x:Name="DetailPanel">
-                            <TextBlock Text="{Binding TransactionInfo.Company}"/>
-                            <TextBlock Text="{Binding TransactionInfo.Invoice}"/>
-                        </DockPanel>
-                    </DataTemplate>
-                </DataGrid.RowDetailsTemplate>                       
+                    <DataGridTextColumn Header="ID" Binding="{Binding TransactionFullId}"/>
+                    <DataGridTextColumn Header="DATA" Binding="{Binding Date}"/>
+                    <DataGridTemplateColumn Header="TYTUŁ I DODATKOWE INFORMACJE">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>                                
+                                <StackPanel Margin="10">
+                                    <TextBlock Text="{Binding Title}"/>
+                                    <DockPanel Style="{StaticResource AdditonalInfo}">
+                                        <TextBlock Style="{StaticResource AdditionalInfoStyle}" Text="NAZWA FIRMY:"/>
+                                        <TextBlock Style="{StaticResource AdditionalInfoStyle}" Margin="4,0,50,0" Text="{Binding TransactionInfo.Company}"/>
+                                        <TextBlock Style="{StaticResource AdditionalInfoStyle}" Text="NUMER FAKTURY:"/>
+                                        <TextBlock Style="{StaticResource AdditionalInfoStyle}" Margin="4,0,0,0" Text="{Binding TransactionInfo.Invoice}"/>
+                                    </DockPanel>
+                                </StackPanel>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <DataGridTextColumn Header="KWOTA" Binding="{Binding Amount}" ElementStyle="{StaticResource TextBlockTrigger}" />
+                    <DataGridTextColumn Header="SALDO" Binding="{Binding Balance}"/>
+                    <DataGridTextColumn Header="TYP TRANSAKCJI" Binding="{Binding TransactionType.Type}"/>
+                    <DataGridTextColumn Header="UŻYTKOWNIK" Binding="{Binding Users.FullName}"/>
+                </DataGrid.Columns>                                    
             </DataGrid>
         </ScrollViewer>
     </Grid>
