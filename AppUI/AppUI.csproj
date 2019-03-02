@@ -133,16 +133,6 @@
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
-    <Resource Include="Resources\OpenSans-Bold.ttf" />
-    <Resource Include="Resources\OpenSans-BoldItalic.ttf" />
-    <Resource Include="Resources\OpenSans-ExtraBold.ttf" />
-    <Resource Include="Resources\OpenSans-ExtraBoldItalic.ttf" />
-    <Resource Include="Resources\OpenSans-Italic.ttf" />
-    <Resource Include="Resources\OpenSans-Light.ttf" />
-    <Resource Include="Resources\OpenSans-LightItalic.ttf" />
-    <Resource Include="Resources\OpenSans-Regular.ttf" />
-    <Resource Include="Resources\OpenSans-SemiBold.ttf" />
-    <Resource Include="Resources\OpenSans-SemiBoldItalic.ttf" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config">
