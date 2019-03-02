@@ -6,18 +6,89 @@
         xmlns:local="clr-namespace:AppUI.Views"
         xmlns:converter="clr-namespace:AppUI.Converters"
         mc:Ignorable="d"
-        Title="Menedżer transakcji" Height="1000" Width="1050" WindowStartupLocation="CenterScreen" FontFamily="Calibri">
+        Title="Menedżer transakcji" Height="1000" Width="1050" WindowStartupLocation="CenterScreen">
     <Window.Resources>
         <converter:IsNotNullConverter x:Key="IsNotNull"/>
-        <Style TargetType="TextBlock">
-            <Setter Property="Foreground" Value="White"/>
-            <Setter Property="FontFamily" Value="Palanquin"/>
-            <Setter Property="FontWeight" Value="DemiBold"/>
+        <converter:BoolToVisibilityConverter x:Key="IsVisible"/>            
+
+        <Style TargetType="{x:Type DatePicker}">
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Foreground" Value="{StaticResource SidePanelFontColor}"/>
+            <Style.Resources>
+                <Style TargetType="DatePickerTextBox">
+                    <Setter Property="VerticalContentAlignment" Value="Center"/>
+                    <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                    <Setter Property="VerticalAlignment" Value="Center"/>
+                    <Setter Property="Background" Value="{StaticResource SidePanelBackground2}"/>
+                    <Setter Property="IsReadOnly" Value="True"/>
+                    <Setter Property="ScrollViewer.PanningMode" Value="VerticalFirst"/>
+                    <Setter Property="Stylus.IsFlicksEnabled" Value="False"/>
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="{x:Type DatePickerTextBox}">
+                                <Grid>
+                                    <Grid.Resources>
+                                        <SolidColorBrush x:Key="WatermarkBrush" Color="#FFAAAAAA"/>
+                                    </Grid.Resources>
+                                    <VisualStateManager.VisualStateGroups>
+                                        <VisualStateGroup x:Name="CommonStates">
+                                            <VisualStateGroup.Transitions>
+                                                <VisualTransition GeneratedDuration="0"/>
+                                                <VisualTransition GeneratedDuration="0:0:0.1" To="MouseOver"/>
+                                            </VisualStateGroup.Transitions>
+                                            <VisualState x:Name="Normal"/>
+                                            <VisualState x:Name="MouseOver">
+                                                <Storyboard>
+                                                    <ColorAnimation Duration="0" To="#FF99C1E2" Storyboard.TargetProperty="(Border.BorderBrush).(SolidColorBrush.Color)" Storyboard.TargetName="ContentElement"/>
+                                                    <ColorAnimation Duration="0" To="#FF99C1E2" Storyboard.TargetProperty="(Border.BorderBrush).(SolidColorBrush.Color)" Storyboard.TargetName="watermark_decorator"/>
+                                                </Storyboard>
+                                            </VisualState>
+                                        </VisualStateGroup>
+                                        <VisualStateGroup x:Name="WatermarkStates">
+                                            <VisualStateGroup.Transitions>
+                                                <VisualTransition GeneratedDuration="0"/>
+                                            </VisualStateGroup.Transitions>
+                                            <VisualState x:Name="Unwatermarked"/>
+                                            <VisualState x:Name="Watermarked">
+                                                <Storyboard>
+                                                    <DoubleAnimation Duration="0" To="0" Storyboard.TargetProperty="Opacity" Storyboard.TargetName="ContentElement"/>
+                                                    <DoubleAnimation Duration="0" To="1" Storyboard.TargetProperty="Opacity" Storyboard.TargetName="PART_Watermark"/>
+                                                </Storyboard>
+                                            </VisualState>
+                                        </VisualStateGroup>
+                                        <VisualStateGroup x:Name="FocusStates">
+                                            <VisualStateGroup.Transitions>
+                                                <VisualTransition GeneratedDuration="0"/>
+                                            </VisualStateGroup.Transitions>
+                                            <VisualState x:Name="Unfocused"/>
+                                            <VisualState x:Name="Focused">
+                                                <Storyboard>
+                                                    <DoubleAnimation Duration="0" To="1" Storyboard.TargetProperty="Opacity" Storyboard.TargetName="FocusVisual"/>
+                                                </Storyboard>
+                                            </VisualState>
+                                        </VisualStateGroup>
+                                    </VisualStateManager.VisualStateGroups>
+                                    <Border x:Name="Border" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" CornerRadius="1" Opacity="1" Padding="{TemplateBinding Padding}">
+                                        <Grid x:Name="WatermarkContent" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}">
+                                            <Border x:Name="ContentElement" BorderBrush="#FFFFFFFF" BorderThickness="1" Visibility="Collapsed"/>
+                                            <Border x:Name="watermark_decorator" BorderBrush="#FFFFFFFF" BorderThickness="1" Visibility="Collapsed">
+                                                <ContentControl x:Name="PART_Watermark" Focusable="False" IsHitTestVisible="False" Opacity="0" Padding="2"/>
+                                            </Border>
+                                            <ScrollViewer x:Name="PART_ContentHost" HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="0" VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                                            <Border x:Name="FocusVisual" BorderBrush="#FF45D6FA" CornerRadius="1" IsHitTestVisible="False" Opacity="0"/>
+                                        </Grid>
+                                    </Border>
+                                </Grid>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+            </Style.Resources>
         </Style>
-        <Style TargetType="TextBox">
+        <Style x:Key="WatermarkedTextbox" TargetType="TextBox">
             <Setter Property="Height" Value="20"/>
-            <Setter Property="Background" Value="#FFB695DC"/>
-            <Setter Property="Foreground" Value="#FFDBCDEE"/>
+            <Setter Property="Background" Value="{StaticResource SearchTextBoxBackground}"/>
+            <Setter Property="Foreground" Value="{StaticResource SearchTextBoxForeground}"/>
             <Setter Property="VerticalContentAlignment" Value="Center"/>
             <Setter Property="Template">
                 <Setter.Value>
@@ -25,13 +96,46 @@
                         <Border x:Name="border" 
                                 CornerRadius="8"
                                 Background="{TemplateBinding Background}">
-                            <DockPanel>
-                                <Image Source="/InvoiceManager;component/Resources/iconfinder_icon-111-search_314807.png"/>
-                                <ScrollViewer x:Name="PART_ContentHost"
-                                              Focusable="False"
-                                              HorizontalScrollBarVisibility="Hidden"
-                                              VerticalScrollBarVisibility="Hidden"/>                                
-                            </DockPanel>
+                            <Grid Margin="0,0,5,0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="auto"/>
+                                    <ColumnDefinition Width="auto"/>
+                                </Grid.ColumnDefinitions>
+                                <Image Grid.Column="0" Margin="2,0,0,0" Source="/InvoiceManager;component/Resources/iconfinder_icon-111-search_314807.png"/>
+                                <TextBlock Grid.Column="1" Text="Przeszukaj wyniki po tytułach..." Background="{TemplateBinding Background}">
+                                    <TextBlock.Visibility>
+                                        <MultiBinding Converter="{StaticResource IsVisible}">
+                                            <Binding ElementName="inputSearchedText" Path="Text.IsEmpty"/>
+                                            <Binding ElementName="inputSearchedText" Path="IsFocused"/>
+                                        </MultiBinding>
+                                    </TextBlock.Visibility>
+                                </TextBlock>
+                                <TextBox Grid.Column="1" Text="{Binding SearchTitle, UpdateSourceTrigger=PropertyChanged, Mode=OneWayToSource}" CaretBrush="{TemplateBinding Foreground}" VerticalContentAlignment="Center" x:Name="inputSearchedText" Foreground="{TemplateBinding Foreground}" Background="Transparent" BorderThickness="0"/>
+                            </Grid>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style TargetType="TextBlock">
+            <Setter Property="Foreground" Value="{StaticResource SidePanelFontColor}"/>
+            <Setter Property="FontFamily" Value="Lato"/>
+            <Setter Property="FontWeight" Value="Normal"/>
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+            <Setter Property="Margin" Value="0,0,0,10"/>
+        </Style>
+        <Style TargetType="Button">
+            <Setter Property="FontFamily" Value="Lato"/>
+            <Setter Property="FontWeight" Value="Light"/>
+            <Setter Property="Height" Value="25"/>
+            <Setter Property="Width" Value="150"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Border CornerRadius="3" Background="{TemplateBinding Background}">
+                            <ContentPresenter VerticalAlignment="Center" 
+                                              HorizontalAlignment="Center"
+                                              Content="{TemplateBinding Content}"/>
                         </Border>
                     </ControlTemplate>
                 </Setter.Value>
@@ -81,31 +185,35 @@
             <Setter Property="VerticalContentAlignment" Value="Center"/>
             <Setter Property="HorizontalContentAlignment" Value="Center"/>
             <Setter Property="Padding" Value="10"/>
-            <Setter Property="Background" Value="#FFF0F5F9"/>
+            <Setter Property="Background" Value="{StaticResource DataGridHeaderBackground}"/>
             <Setter Property="FontFamily" Value="OpenSans"/>
             <Setter Property="FontSize" Value="10"/>
             <Setter Property="FontWeight" Value="Bold"/>
-            <Setter Property="Foreground" Value="#FF323232"/>
-            <Setter Property="BorderThickness" Value="1"/>
-            <Setter Property="BorderBrush" Value="#FFD9DFE5"/>
+            <Setter Property="Foreground" Value="{StaticResource DataGridHeaderFontColor}"/>
+            <Setter Property="BorderThickness" Value="0,1,1,1"/>
+            <Setter Property="BorderBrush" Value="{StaticResource DataGridBorder}"/>
             <Setter Property="Margin" Value="0,0,0,5"/>
             <Style.Triggers>
                 <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Background" Value="#FF898787"/>
+                    <Setter Property="Background" Value="{StaticResource DataGridBackground2}"/>
                 </Trigger>
             </Style.Triggers>
         </Style>
         <Style x:Key="RowStyle" TargetType="DataGridRow">
             <Setter Property="Foreground" Value="#FF767B9F"/>
-            <Setter Property="BorderBrush" Value="Transparent" />
+            <Setter Property="BorderBrush" Value="{StaticResource DataGridBorder}" />
+            <Setter Property="BorderThickness" Value="0,1,0,1"/>
             <Setter Property="Background" Value="White" />
             <Setter Property="FontFamily" Value="OpenSans"/>
             <Setter Property="Margin" Value="0,0,0,5"/>
             <Style.Triggers>
                 <Trigger Property="IsSelected" Value="True">
-                    <Setter Property="Background" Value="White" />
-                    <Setter Property="BorderBrush" Value="Transparent" />
+                    <Setter Property="Background" Value="White"/>
+                    <Setter Property="BorderBrush" Value="Transparent"/>
                     <Setter Property="Foreground" Value="#FF767B9F"/>
+                </Trigger>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#FFE2EBF3"/>
                 </Trigger>
             </Style.Triggers>
         </Style>
@@ -120,9 +228,14 @@
                     <Setter Property="BorderBrush" Value="Transparent" />
                     <Setter Property="Foreground" Value="#FF767B9F"/>
                 </Trigger>
+                <DataTrigger Binding="{Binding ElementName=TransactionFull, Path=RowBackground}" Value="#FFE2EBF3">
+                    <Setter Property="Background" Value="#FFE2EBF3"/>
+                    <Setter Property="TextBlock.Background" Value="#FFE2EBF3"/>
+                </DataTrigger>
             </Style.Triggers>
         </Style>
     </Window.Resources>
+    
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="auto"/>
@@ -134,27 +247,46 @@
 
         </Grid.RowDefinitions>
         
-        <Border Padding="10" Background="#FF464B71" Grid.Row="0" Grid.RowSpan="2">
-        <StackPanel Background="#FF464B71">
-            <Button x:Name="ShowAddTransactionWindow" Content="Dodaj wpis"/>
-                
-                <TextBlock Text="Filtry" HorizontalAlignment="Center" FontSize="16" Margin="0,0,0,10" Foreground="#FF4B5374"/>
-            <TextBlock Text="Rodzaj transakcji"/>
-            <ComboBox x:Name="TransactionType" SelectedIndex="0" DisplayMemberPath="Type" SelectedItem="{Binding Path=SelectedTransaction, Mode=OneWayToSource}"/>
-            <TextBlock Text="Użytkownicy"/>
-            <ComboBox x:Name="Users" DisplayMemberPath="FullName" SelectedIndex="0" SelectedItem="{Binding Path=SelectedUser, Mode=OneWayToSource}"/>
-            <TextBlock Text="Data"/>
-            <DockPanel>
-                <TextBlock Text="Od"/>
-                <DatePicker x:Name="FromDate" SelectedDateFormat="Short"/>
-                <TextBlock Text="Do"/>
-                <DatePicker x:Name="ToDate" SelectedDateFormat="Short"/>
-            </DockPanel>
-            <Button x:Name="RefreshBtn" Content="Filtruj"/>
+        <Border Background="{StaticResource SidePanelBackground1}" Grid.Row="1" Grid.RowSpan="2">
+            <StackPanel Background="{StaticResource SidePanelBackground1}">
+                <TextBlock Text="Filtry" HorizontalAlignment="Center" FontSize="16" Margin="0,10,0,10"/>
+                    <Border Background="{StaticResource SidePanelBackground2}" Padding="10">
+                        <StackPanel>
+                            <TextBlock Text="RODZAJ TRANSAKCJI"/>
+                            <ComboBox x:Name="TransactionType" SelectedIndex="0" DisplayMemberPath="Type" SelectedItem="{Binding Path=SelectedTransaction, Mode=OneWayToSource}" Background="{DynamicResource SidePanelBackground2}" BorderBrush="{DynamicResource SidePanelBorders}"/>                        
+                        </StackPanel>
+                    </Border>
+                <Border Padding="10">
+                    <StackPanel>
+                        <TextBlock Text="UŻYTKOWNICY"/>
+                        <ComboBox x:Name="Users" DisplayMemberPath="FullName" SelectedIndex="0" SelectedItem="{Binding Path=SelectedUser, Mode=OneWayToSource}"/>                        
+                    </StackPanel>
+                </Border>
+                <Border Background="{StaticResource SidePanelBackground2}" Padding="10">
+                    <StackPanel>
+                        <TextBlock Text="ZAKRES DAT"/>
+                        <Border CornerRadius="2" BorderThickness="1" BorderBrush="{StaticResource SidePanelBorders}" Margin="0,0,0,5">
+                            <DockPanel>
+                                <Border Width="25" Background="{StaticResource SidePanelBackground3}">
+                                    <TextBlock HorizontalAlignment="Center" Margin="0" FontSize="8" VerticalAlignment="Center" Text="OD"/>                                    
+                                </Border>
+                                <DatePicker x:Name="FromDate" SelectedDateFormat="Short"/>
+                                <Border Width="25" Background="{StaticResource SidePanelBackground3}">
+                                    <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0" Text="DO" FontSize="8"/>                                    
+                                </Border>
+                                <DatePicker x:Name="ToDate" SelectedDateFormat="Short"/>
+                            </DockPanel>                                                    
+                        </Border>
+                    </StackPanel>
+                </Border>
+                <Button x:Name="RefreshBtn" Margin="0,10,0,0" Background="{StaticResource BlueButton}" Foreground="White" Content="FILTRUJ"/>
             </StackPanel>
         </Border>
-        <DockPanel Grid.Column="1" Grid.Row="0" Background="#FFAB80D4">
-            <TextBox Margin="10"/>
+        <DockPanel Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="0" Background="#FF242424" LastChildFill="False">
+            <Button x:Name="ShowAddTransactionWindow" Background="{StaticResource GreenButton}" Margin="8" Content="DODAJ WPIS" Foreground="#FFB2E6CA"/>
+            <TextBox Margin="10" MinWidth="205" MaxLength="50" Style="{StaticResource WatermarkedTextbox}"/>
+            <Button x:Name="UseTitleFilter" Content="SZUKAJ" Foreground="White" Width="100" Background="{StaticResource BlueButton}"/>
+            <Button x:Name="Print" Content="DRUKUJ" Width="100" Background="{StaticResource BlueButton}" Foreground="White" DockPanel.Dock="Right" Margin="0,0,10,0"/>
         </DockPanel>
         
         <ScrollViewer Grid.Column="1" Grid.Row="1" VerticalScrollBarVisibility="Auto">

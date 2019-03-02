@@ -20,7 +20,7 @@ namespace DataAccess
             _sqlliteDataAcces = sqliteDataAcces;
         }
 
-        private ISqliteDataAccess _sqlliteDataAcces;
+        private ISqliteDataAccess _sqlliteDataAcces;        
 
         public List<TransactionFullModel> SelectTransactionFull(DateTime from, DateTime to, string filters)
         {

@@ -47,6 +47,7 @@ namespace AppUI.ViewModels
         private DateTime _toDate = DateTime.Now;
         private UsersModel _selectedUser;
         private TransactionTypeModel _selectedTransaction;
+        private string _searchTitle;
 
         #endregion
 
@@ -76,16 +77,23 @@ namespace AppUI.ViewModels
             set { _toDate = value; }
         }
 
+        public string SearchTitle
+        {
+            get { return _searchTitle; }
+            set { _searchTitle = value; }
+        }
+
         #endregion
 
         #region Methods for data acces
 
-        private void GetTransactions()
+        private void GetTransactions(string titleSearch = null)
         {
-            string filters = $"{UseTransactionTypeFilter()} {UseUsersFilter()}";
+            string filters = $"{UseTransactionTypeFilter()} {UseUsersFilter()} {titleSearch}";
             
             List<TransactionFullModel> model = new List<TransactionFullModel>(_queries.SelectTransactionFull(FromDate, ToDate, filters));
             model.Reverse();
+
             if (TransactionFull == null)
             {
                 TransactionFull = new BindableCollection<TransactionFullModel>();
@@ -103,10 +111,18 @@ namespace AppUI.ViewModels
                     item.Amount = Convert.ToDecimal(amount);
                 }
                 if (item.TransactionInfo == null) item.TransactionInfo = new TransactionInfoModel();
-                //item.TransactionInfo.Company = $"Nazwa firmy: {item.TransactionInfo.Company}";
-                //item.TransactionInfo.Invoice = $"Numer faktury: {item.TransactionInfo.Invoice}";
                 TransactionFull.Add(item);
             }            
+        }
+
+        public void UseTitleFilter()
+        {
+            if(_searchTitle != null)
+            {
+                string filter = $"AND Title LIKE '%{_searchTitle}%'";
+
+                GetTransactions(filter);
+            }
         }
 
         private string UseTransactionTypeFilter()

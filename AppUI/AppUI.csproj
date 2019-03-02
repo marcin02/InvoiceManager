@@ -74,6 +74,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Bootstrapper.cs" />
+    <Compile Include="Converters\BoolToVisibilityConverter.cs" />
     <Compile Include="Converters\IsNotNullConverter.cs" />
     <Compile Include="Models\AddTransactionModel.cs" />
     <Compile Include="Interfaces\IAddTransactionModel.cs" />
@@ -89,6 +90,14 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="ResourceDictionaries\Colors.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ResourceDictionaries\ComboBox.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\AddTransactionView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -124,6 +133,16 @@
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
+    <Resource Include="Resources\OpenSans-Bold.ttf" />
+    <Resource Include="Resources\OpenSans-BoldItalic.ttf" />
+    <Resource Include="Resources\OpenSans-ExtraBold.ttf" />
+    <Resource Include="Resources\OpenSans-ExtraBoldItalic.ttf" />
+    <Resource Include="Resources\OpenSans-Italic.ttf" />
+    <Resource Include="Resources\OpenSans-Light.ttf" />
+    <Resource Include="Resources\OpenSans-LightItalic.ttf" />
+    <Resource Include="Resources\OpenSans-Regular.ttf" />
+    <Resource Include="Resources\OpenSans-SemiBold.ttf" />
+    <Resource Include="Resources\OpenSans-SemiBoldItalic.ttf" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config">

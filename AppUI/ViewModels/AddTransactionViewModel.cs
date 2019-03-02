@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace AppUI.ViewModels
 {
@@ -88,7 +89,7 @@ namespace AppUI.ViewModels
             set
             {
                 _selectedTransactionType = value;
-                EnableTextBoxes(_selectedTransactionType.Type);                
+                if(_selectedTransactionType != null) EnableTextBoxes(_selectedTransactionType.Type);                
             }
         }
         public UsersModel SelectedUser
@@ -153,30 +154,37 @@ namespace AppUI.ViewModels
 
         public void Insert()
         {
-            InsertTransactionModel model = new InsertTransactionModel
+            if (GetAndSetBalance()>=0)
             {
-                Amount = _amount,
-                Balance = GetAndSetBalance(),
-                Title = _title,
-                TransactionTypeId = _selectedTransactionType.TransactionTypeId,
-                UserId = _selectedUser.UserId
-            };
-
-            _queries.InsertTransaction(model);
-
-            if(!string.IsNullOrWhiteSpace(Company) || !string.IsNullOrWhiteSpace(Invoice))
-            {
-                InsertTransactionModelInfo infoModel = new InsertTransactionModelInfo
+                InsertTransactionModel model = new InsertTransactionModel
                 {
-                    Company = _company,
-                    Invoice = _invoice,
-                    TransactionFullId = _queries.SelectLastTransactionFullId()
+                    Amount = _amount,
+                    Balance = GetAndSetBalance(),
+                    Title = _title,
+                    TransactionTypeId = _selectedTransactionType.TransactionTypeId,
+                    UserId = _selectedUser.UserId
                 };
 
-                _queries.InsertTransactionInfo(infoModel);
-            }
+                _queries.InsertTransaction(model);
 
-            TryClose();
+                if (!string.IsNullOrWhiteSpace(Company) || !string.IsNullOrWhiteSpace(Invoice))
+                {
+                    InsertTransactionModelInfo infoModel = new InsertTransactionModelInfo
+                    {
+                        Company = _company,
+                        Invoice = _invoice,
+                        TransactionFullId = _queries.SelectLastTransactionFullId()
+                    };
+
+                    _queries.InsertTransactionInfo(infoModel);
+                }
+
+                TryClose(); 
+            }
+            else
+            {
+                MessageBox.Show("Saldo nie może być ujemne!", "Błąd", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
         public void Close()
