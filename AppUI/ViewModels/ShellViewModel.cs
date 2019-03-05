@@ -191,12 +191,11 @@ namespace AppUI.ViewModels
             AddTransactionModel model = new AddTransactionModel
             {
                 Balance = _queries.SelectLastBalance(),
-                Users = this.Users,
+                Users = Users,
                 TransactionType = this.TransactionType
             };
 
-            model.Users.RemoveAt(0);
-            model.TransactionType.RemoveAt(0);
+           
             WindowManager wm = new WindowManager();
             wm.ShowWindow(new AddTransactionViewModel(model, _queries));
         }

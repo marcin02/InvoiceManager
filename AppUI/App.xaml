@@ -7,6 +7,7 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="ResourceDictionaries/Colors.xaml"/>
                 <ResourceDictionary Source="ResourceDictionaries/ComboBox.xaml"/>
+                <ResourceDictionary Source="ResourceDictionaries/Others.xaml"/>
                 <ResourceDictionary>
                     <local:Bootstrapper x:Key="Bootstrapper"/>
                 </ResourceDictionary>

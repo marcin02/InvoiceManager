@@ -5,63 +5,139 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"        
         xmlns:local="clr-namespace:AppUI.Views"
         mc:Ignorable="d"
-        Title="AddTransactionView" Height="450" Width="450" WindowStartupLocation="CenterScreen" WindowStyle="None">
+        Title="AddTransactionView"
+        Foreground="{StaticResource SidePanelFontColor}" 
+        FontFamily="Lato" FontWeight="Normal" 
+        Height="275" Width="650" 
+        ResizeMode="NoResize"
+        WindowStartupLocation="CenterScreen" 
+        BorderThickness="2"
+        BorderBrush="{StaticResource SidePanelBorders}"
+        WindowStyle="None" SizeToContent="Height" Background="Transparent">
+
     <Window.Resources>
-        
-        <Style TargetType="TextBox">
-            <Setter Property="Margin" Value="5,5,5,0"/>
-        </Style>
         <Style TargetType="TextBlock">
-            <Setter Property="Margin" Value="0,5,0,0"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+            <Setter Property="Margin" Value="0,0,0,5"/>
         </Style>
-        <Style TargetType="ComboBox">
-            <Setter Property="Margin" Value="5,0,5,0"/>
+        <Style TargetType="ComboBox" BasedOn="{StaticResource ComboBoxStyle}">
+            <Setter Property="Margin" Value="5,5,5,5"/>
+            <Setter Property="Width" Value="180"/>
         </Style>
-        <Style TargetType="Button">
-            <Setter Property="Width" Value="70"/>
+        <Style TargetType="TextBox">
+            <Setter Property="Margin" Value="5"/>
+            <Setter Property="Height" Value="20"/>
+            <Setter Property="Background" Value="{StaticResource  SidePanelBackground3}"/>
+            <Setter Property="Foreground" Value="{StaticResource SearchTextBoxForeground}"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type TextBox}">
+                        <Border x:Name="border" 
+                                CornerRadius="2"
+                                BorderThickness="1"
+                                BorderBrush="{StaticResource SidePanelBorders}"
+                                Background="{TemplateBinding Background}">
+                            <ScrollViewer x:Name="PART_ContentHost"
+                                              Focusable="False"
+                                              HorizontalScrollBarVisibility="Hidden"
+                                              VerticalScrollBarVisibility="Hidden"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsEnabled" Value="False">
+                    <Setter Property="Background" Value="#FF8F909B"/>
+                </Trigger>
+            </Style.Triggers>
         </Style>
-        
     </Window.Resources>
 
-    <StackPanel>
-        <Grid Margin="10">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="auto"/>
-                <ColumnDefinition/>
-            </Grid.ColumnDefinitions>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="auto"/>
-                <RowDefinition Height="auto"/>
-                <RowDefinition Height="auto"/>
-                <RowDefinition Height="auto"/>
-                <RowDefinition Height="auto"/>
-                <RowDefinition Height="auto"/>
-            </Grid.RowDefinitions>
-
-            <DockPanel Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="0">
-                <TextBlock Margin="0" Text="Rodzaj transakcji:"/>
-                <ComboBox x:Name="TransactionType" DisplayMemberPath="Type" SelectedItem="{Binding SelectedTransactionType, Mode=OneWayToSource}" Width="100"/>
-                <TextBlock Margin="0" Text="Użytkownik:"/>
-                <ComboBox x:Name="Users" DisplayMemberPath="FullName" SelectedItem="{Binding SelectedUser, Mode=OneWayToSource}" />
-            </DockPanel>
-            <TextBlock Grid.Column="0" Grid.Row="1" Text="Tytułem:"/>
-            <TextBlock Grid.Column="0" Grid.Row="2" Text="Kwota:"/>
-            <TextBlock Grid.Column="0" Grid.Row="3" Text="Nazwa firmy:"/>
-            <TextBlock Grid.Column="0" Grid.Row="4" Text="Numer faktury:"/>
-
-            <TextBox x:Name="Title" Grid.Column="1" Grid.Row="1" IsEnabled="{Binding TitleIsEnabled}"/>
-            <DockPanel Grid.Column="1" Grid.Row="2">
-                <TextBox x:Name="Amount" Width="50" HorizontalAlignment="Left" IsEnabled="{Binding AmountIsEnabled}"/>
-                <TextBlock Text="zł" />
-            </DockPanel>
-            <TextBox x:Name="Company" Grid.Column="1" Grid.Row="3" IsEnabled="{Binding CompanyIsEnabled}"/>
-            <TextBox x:Name="Invoice" Grid.Column="1" Grid.Row="4" IsEnabled="{Binding InvoiceIsEnabled}"/>
-        </Grid>
-
-        <DockPanel LastChildFill="False" Margin="10">
-            <Button x:Name="Insert" Content="OK"/>
-            <Button x:Name="Close" DockPanel.Dock="Right" Content="Anuluj"/>
-        </DockPanel>
-        
-    </StackPanel>
+    
+        <StackPanel Background="{StaticResource SidePanelBackground1}">
+            <Border Padding="10" Background="{StaticResource SidePanelBackground2}">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <StackPanel Grid.Column="0">
+                        <TextBlock Text="RODZAJ TRANSAKCJI"/>
+                        <ComboBox x:Name="TransactionType" DisplayMemberPath="Type" SelectedItem="{Binding SelectedTransactionType, ValidatesOnDataErrors=True, UpdateSourceTrigger=PropertyChanged}"/>
+                    </StackPanel>
+                    <StackPanel Grid.Column="1">
+                        <TextBlock  Text="UŻYTKOWNIK"/>
+                        <ComboBox x:Name="Users" DisplayMemberPath="FullName" SelectedItem="{Binding SelectedUser, ValidatesOnDataErrors=True, UpdateSourceTrigger=PropertyChanged}" />
+                    </StackPanel>
+                </Grid>
+            </Border>
+            <Border Padding="10">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition Width="auto"/>
+                    </Grid.ColumnDefinitions>
+                    <StackPanel Grid.Column="0">
+                        <TextBlock Text="TYTUŁEM"/>
+                        <TextBox x:Name="Title" MaxLength="{Binding MaxCharacters}" IsEnabled="{Binding TitleIsEnabled}" Text="{Binding Title, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"/>
+                    </StackPanel>
+                    <Border Margin="0,0,0,4" Padding="0" Grid.Column="1"  Width="40">
+                        <DockPanel VerticalAlignment="Bottom" LastChildFill="False">
+                            <TextBlock x:Name="TitleLenght"/>
+                            <TextBlock Text="/"/>
+                            <TextBlock Text="{Binding MaxCharacters}"/>
+                        </DockPanel>
+                    </Border>
+                    <StackPanel Grid.Column="2">
+                        <TextBlock Margin="0,0,10,5" Text="KWOTA"/>
+                        <DockPanel >
+                            <TextBox x:Name="Amount" Text="{Binding Amount, ValidatesOnDataErrors=True, UpdateSourceTrigger=PropertyChanged}" Width="50" HorizontalAlignment="Left" IsEnabled="{Binding AmountIsEnabled}"/>
+                            <TextBlock Text="zł" />
+                        </DockPanel>
+                    </StackPanel>
+                </Grid>
+            </Border>
+            <Border Padding="10" Background="{StaticResource SidePanelBackground2}">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition Width="auto"/>
+                    </Grid.ColumnDefinitions>
+                    <StackPanel Grid.Column="0">
+                        <TextBlock Text="NAZWA FIRMY"/>
+                        <TextBox x:Name="Company" MaxLength="{Binding MaxCharactersCompany}" Text="{Binding Company, UpdateSourceTrigger=PropertyChanged, Mode=OneWayToSource}" IsEnabled="{Binding CompanyIsEnabled}"/>
+                    </StackPanel>
+                    <Border Margin="0,0,0,4" Padding="0" Grid.Column="1"  Width="40">
+                        <DockPanel VerticalAlignment="Bottom" LastChildFill="False">
+                            <TextBlock x:Name="CompanyLenght"/>
+                            <TextBlock Text="/"/>
+                            <TextBlock Text="{Binding MaxCharactersCompany}"/>
+                        </DockPanel>
+                    </Border>
+                    <StackPanel Grid.Column="2">
+                        <TextBlock Text="NUMER FAKTURY"/>
+                        <TextBox x:Name="Invoice" MaxLength="{Binding MaxCharactersCompany}" Text="{Binding Invoice, UpdateSourceTrigger=PropertyChanged, Mode=OneWayToSource}" IsEnabled="{Binding InvoiceIsEnabled}"/>
+                    </StackPanel>
+                    <Border Margin="0,0,0,4" Padding="0" Grid.Column="4"  Width="40">
+                        <DockPanel VerticalAlignment="Bottom" LastChildFill="False">
+                            <TextBlock x:Name="InvoiceLenght"/>
+                            <TextBlock Text="/"/>
+                            <TextBlock Text="{Binding MaxCharactersCompany}"/>
+                        </DockPanel>
+                    </Border>
+                </Grid>
+            </Border>
+            <Border Padding="10">
+                <DockPanel LastChildFill="False" Margin="10">
+                    <Button x:Name="Insert" Background="{StaticResource GreenButtonBackground}" Foreground="{StaticResource GreenButtonForeground}" Content="OK"/>
+                    <Button x:Name="Close"  Background="{StaticResource RedButtonBackground}" Foreground="{StaticResource RedButtonForeground}" DockPanel.Dock="Right" Content="Anuluj"/>
+                </DockPanel>
+            </Border>
+        </StackPanel>
+  
 </Window>

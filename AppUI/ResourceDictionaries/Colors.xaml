@@ -14,6 +14,9 @@
     <SolidColorBrush x:Key="SearchTextBoxBackground"  Color="#FF3B3C3C"/>
     <SolidColorBrush x:Key="SearchTextBoxForeground" Color="#FFA2A2A2"/>
     <SolidColorBrush x:Key="BlueButton" Color="#FF11799F"/>
-    <SolidColorBrush x:Key="GreenButton" Color="#FF4BB97D"/>
+    <SolidColorBrush x:Key="GreenButtonBackground" Color="#FF4BB97D"/>
+    <SolidColorBrush x:Key="GreenButtonForeground" Color="#FFB2E6CA"/>
+    <SolidColorBrush x:Key="RedButtonBackground" Color="#FFDA3939"/>
+    <SolidColorBrush x:Key="RedButtonForeground" Color="#FFF9BFBC"/>
 
 </ResourceDictionary>

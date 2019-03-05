@@ -34,7 +34,7 @@
     <ControlTemplate x:Key="ComboBoxTextBox" TargetType="TextBox">
         <Border x:Name="PART_ContentHost" Focusable="False" Background="{TemplateBinding Background}" />
     </ControlTemplate>
-    <Style x:Key="{x:Type ComboBox}" TargetType="ComboBox">
+    <Style x:Key="ComboBoxStyle" TargetType="ComboBox">
         <Setter Property="Margin" Value="0,0,0,5"/>
         <Setter Property="SnapsToDevicePixels" Value="true"/>
         <Setter Property="OverridesDefaultStyle" Value="true"/>
