@@ -63,16 +63,6 @@ namespace AppUI.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap Disable_background {
-            get {
-                object obj = ResourceManager.GetObject("Disable_background", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
         internal static System.Drawing.Bitmap iconfinder_icon_111_search_314807 {
             get {
                 object obj = ResourceManager.GetObject("iconfinder_icon_111_search_314807", resourceCulture);

@@ -50,9 +50,10 @@
             <Style.Triggers>
                 <Trigger Property="IsEnabled" Value="False">
                     <Setter Property="Background" Value="#FF8F909B"/>
-                </Trigger>
+                </Trigger>                
             </Style.Triggers>
         </Style>
+        
     </Window.Resources>
 
     
@@ -134,8 +135,8 @@
             </Border>
             <Border Padding="10">
                 <DockPanel LastChildFill="False" Margin="10">
-                    <Button x:Name="Insert" Background="{StaticResource GreenButtonBackground}" Foreground="{StaticResource GreenButtonForeground}" Content="OK"/>
-                    <Button x:Name="Close"  Background="{StaticResource RedButtonBackground}" Foreground="{StaticResource RedButtonForeground}" DockPanel.Dock="Right" Content="Anuluj"/>
+                    <Button x:Name="Insert" Style="{StaticResource GreenButton}" Content="OK"/>
+                    <Button x:Name="Close"  Style="{StaticResource RedButton}" DockPanel.Dock="Right" Content="Anuluj"/>
                 </DockPanel>
             </Border>
         </StackPanel>

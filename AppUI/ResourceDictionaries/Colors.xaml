@@ -13,10 +13,16 @@
     <SolidColorBrush x:Key="DataGridBackground2" Color="#FFCAE8FF"/>
     <SolidColorBrush x:Key="SearchTextBoxBackground"  Color="#FF3B3C3C"/>
     <SolidColorBrush x:Key="SearchTextBoxForeground" Color="#FFA2A2A2"/>
-    <SolidColorBrush x:Key="BlueButton" Color="#FF11799F"/>
+    <SolidColorBrush x:Key="BlueButtonBackground" Color="#FF11799F"/>
+    <Color x:Key="BlueButtonBackgroundColor">#FF11799F</Color>
+    <Color x:Key="BlueButtonOnMouseOver">#FF046CB4</Color>
     <SolidColorBrush x:Key="GreenButtonBackground" Color="#FF4BB97D"/>
+    <Color x:Key="GreenButtonBackgroundColor">#FF4BB97D</Color>
     <SolidColorBrush x:Key="GreenButtonForeground" Color="#FFB2E6CA"/>
+    <Color x:Key="GreenButtonOnMouseOver">#FF388B38</Color>
     <SolidColorBrush x:Key="RedButtonBackground" Color="#FFDA3939"/>
+    <Color x:Key="RedButtonBackgroundColor">#FFDA3939</Color>
     <SolidColorBrush x:Key="RedButtonForeground" Color="#FFF9BFBC"/>
+    <Color x:Key="RedButtonOnMouseOver">#FF972827</Color>
 
 </ResourceDictionary>
