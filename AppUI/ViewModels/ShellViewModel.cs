@@ -49,8 +49,7 @@ namespace AppUI.ViewModels
         private UsersModel _selectedUser;
         private TransactionTypeModel _selectedTransaction;
         private string _searchTitle;
-        private TransactionFullModel _selectedTransactionFull;
-
+        private TransactionFullModel _selectedTransactionFull;     
 
         #endregion
 
@@ -59,25 +58,25 @@ namespace AppUI.ViewModels
         public DateTime FromDate
         {
             get { return _fromDate; }
-            set { _fromDate = value; }
+            set { _fromDate = value; GetTransactions(); }
         }
 
         public TransactionTypeModel SelectedTransaction
         {
             get { return _selectedTransaction; }
-            set { _selectedTransaction = value; }
+            set { _selectedTransaction = value; GetTransactions(); }
         }
 
         public UsersModel SelectedUser
         {
             get { return _selectedUser; }
-            set { _selectedUser = value; }
+            set { _selectedUser = value; GetTransactions(); }
         }
 
         public DateTime ToDate
         {
             get { return _toDate; }
-            set { _toDate = value; }
+            set { _toDate = value; GetTransactions(); }
         }
 
         public string SearchTitle
@@ -108,10 +107,13 @@ namespace AppUI.ViewModels
                 if(SelectedTransactionFull.Deleted == 0)
                 {
                     update = 1;
+                    SelectedTransactionFull.Deleted = update;
                 }
                 else if(SelectedTransactionFull.Deleted == 1)
                 {
                     update = 0;
+                    SelectedTransactionFull.Deleted = update;
+
                 }
 
                 _queries.UpdateTransaction(id, update);
@@ -217,6 +219,7 @@ namespace AppUI.ViewModels
         public void DeleteBtn()
         {
             DeleteTransaction();
+            TransactionFull.Refresh();
         }
 
         public void RefreshBtn()
@@ -239,7 +242,8 @@ namespace AppUI.ViewModels
             };
            
             WindowManager wm = new WindowManager();
-            wm.ShowDialog(new AddTransactionViewModel(model, _queries));            
+            wm.ShowDialog(new AddTransactionViewModel(model, _queries));
+            GetTransactions();
         }
         
         #endregion

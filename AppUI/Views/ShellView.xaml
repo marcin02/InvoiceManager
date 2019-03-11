@@ -185,19 +185,27 @@
             <Setter Property="BorderBrush" Value="{StaticResource DataGridBorder}"/>
             <Setter Property="Margin" Value="0,0,0,5"/>
         </Style>
-        <Style x:Key="RowStyle" TargetType="DataGridRow">
+        <Style x:Key="RowStyle" TargetType="{x:Type DataGridRow}">
             <Setter Property="Foreground" Value="#FF767B9F"/>
             <Setter Property="BorderBrush" Value="{StaticResource DataGridBorder}" />
             <Setter Property="BorderThickness" Value="0,1,0,1"/>
             <Setter Property="Background" Value="White" />
             <Setter Property="FontFamily" Value="OpenSans"/>
             <Setter Property="Margin" Value="0,0,0,5"/>
+            <Setter Property="Visibility" Value="Visible"/>
             <Style.Triggers>
                 <Trigger Property="IsSelected" Value="True">
                     <Setter Property="Background" Value="White"/>
                     <Setter Property="BorderBrush" Value="Transparent"/>
                     <Setter Property="Foreground" Value="#FF767B9F"/>
                 </Trigger>
+                <MultiDataTrigger>
+                    <MultiDataTrigger.Conditions>
+                        <Condition Binding="{Binding ElementName=ShowDeleted, Path=IsChecked}" Value="False"/>
+                        <Condition Binding="{Binding Deleted}" Value="1"/>
+                    </MultiDataTrigger.Conditions>
+                    <Setter Property="Visibility" Value="Collapsed"/>
+                </MultiDataTrigger>
             </Style.Triggers>
         </Style>
         <Style x:Key="CellStyle" TargetType="{x:Type DataGridCell}">
@@ -216,6 +224,16 @@
                     <Setter Property="Background" Value="#FFE2EBF3"/>
                     <Setter Property="TextBlock.Background" Value="#FFE2EBF3"/>
                 </DataTrigger>
+            </Style.Triggers>
+        </Style>
+        <Style TargetType="CheckBox">
+            <Setter Property="Background" Value="{StaticResource SidePanelBackground2}"/>
+            <Setter Property="Path.Stroke" Value="{StaticResource SidePanelBackground2}"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="BorderBrush" Value="{StaticResource SidePanelBackground2}"/>
+                    <Setter Property="Background" Value="{StaticResource SidePanelBackground2}"/>
+                </Trigger>
             </Style.Triggers>
         </Style>
     </Window.Resources>
@@ -247,23 +265,28 @@
                     </StackPanel>
                 </Border>
                 <Border Background="{StaticResource SidePanelBackground2}" Padding="10">
+                    <DockPanel>
+                        <CheckBox x:Name="ShowDeleted" VerticalAlignment="Center"/>
+                        <TextBlock VerticalAlignment="Center" Margin="5,0,0,0" Text="POKAŻ USUNIĘTE"/>
+                    </DockPanel>
+                </Border>
+                <Border Background="{StaticResource SidePanelBackground1}" Padding="10">
                     <StackPanel>
                         <TextBlock Text="ZAKRES DAT"/>
                         <Border CornerRadius="2" BorderThickness="1" BorderBrush="{StaticResource SidePanelBorders}" Margin="0,0,0,5">
                             <DockPanel>
                                 <Border Width="25" Background="{StaticResource SidePanelBackground3}">
-                                    <TextBlock HorizontalAlignment="Center" Margin="0" FontSize="8" VerticalAlignment="Center" Text="OD"/>                                    
+                                    <TextBlock HorizontalAlignment="Center" Margin="0" FontSize="8" VerticalAlignment="Center" Text="OD"/>
                                 </Border>
                                 <DatePicker x:Name="FromDate" SelectedDateFormat="Short"/>
                                 <Border Width="25" Background="{StaticResource SidePanelBackground3}">
-                                    <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0" Text="DO" FontSize="8"/>                                    
+                                    <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0" Text="DO" FontSize="8"/>
                                 </Border>
                                 <DatePicker x:Name="ToDate" SelectedDateFormat="Short"/>
-                            </DockPanel>                                                    
+                            </DockPanel>
                         </Border>
                     </StackPanel>
                 </Border>
-                <Button x:Name="RefreshBtn" Margin="0,10,0,0" Style="{StaticResource BlueButton}" Content="FILTRUJ"/>
             </StackPanel>
         </Border>
         <DockPanel Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="0" Background="#FF242424" LastChildFill="False">
