@@ -3,6 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:cal="http://www.caliburnproject.org"
         xmlns:local="clr-namespace:AppUI.Views"
         xmlns:converter="clr-namespace:AppUI.Converters"
         mc:Ignorable="d"
@@ -10,11 +11,6 @@
     <Window.Resources>
         <converter:IsNotNullConverter x:Key="IsNotNull"/>
         <converter:BoolToVisibilityConverter x:Key="IsVisible"/>
-
-        <Style x:Key="DeleteUndoButton" BasedOn="{StaticResource RedButton}" TargetType="Button">
-            <Setter Property="Content" Value="USUŃ"/>
-            <Setter Property="Margin" Value="5,0,5,0"/>
-        </Style>
         
         <Style TargetType="{x:Type DatePicker}">
             <Setter Property="BorderThickness" Value="0"/>
@@ -304,7 +300,7 @@
                     <DataGridTemplateColumn Header="USUŃ/PRZYWRÓĆ">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
-                                <Control Focusable="False">
+                                <Control>
                                     <Control.Template>
                                         <ControlTemplate>
                                             <ControlTemplate.Resources>
@@ -315,13 +311,13 @@
                                                     <Setter Property="Content" Value="PRZYWRÓĆ WPIS"/>
                                                 </Style>
                                             </ControlTemplate.Resources>
-                                            <Button x:Name="DeleteUndoButton" Style="{StaticResource RedStyle}" Width="120" Margin="5,0,5,0"/>
+                                            <Button x:Name="DeleteBtn" cal:Message.Attach="[Event Click] = [Action DeleteBtn()]" Style="{StaticResource RedStyle}" Width="120" Margin="5,0,5,0"/>
                                             <ControlTemplate.Triggers>
                                                 <DataTrigger Binding="{Binding Deleted}" Value="0">
-                                                    <Setter TargetName="DeleteUndoButton" Property="Style" Value="{StaticResource RedStyle}"/>
+                                                    <Setter TargetName="DeleteBtn" Property="Style" Value="{StaticResource RedStyle}"/>
                                                 </DataTrigger>
                                                 <DataTrigger Binding="{Binding Deleted}" Value="1">
-                                                    <Setter TargetName="DeleteUndoButton" Property="Style" Value="{StaticResource GreenStyle}"/>
+                                                    <Setter TargetName="DeleteBtn" Property="Style" Value="{StaticResource GreenStyle}"/>
                                                 </DataTrigger>
                                             </ControlTemplate.Triggers>
                                         </ControlTemplate>                                        

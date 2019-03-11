@@ -15,6 +15,7 @@ namespace DataAccess.Models
         public int UserId { get; set; }
         public DateTime CreationDate { get; set; }
         public string  Date { get { return CreationDate.ToShortDateString(); } }
+        public int Deleted { get; set; }
         public UsersModel Users { get; set; }
         public TransactionTypeModel TransactionType { get; set; }
         public TransactionInfoModel TransactionInfo { get; set; }

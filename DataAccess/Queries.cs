@@ -20,7 +20,39 @@ namespace DataAccess
             _sqlliteDataAcces = sqliteDataAcces;
         }
 
-        private ISqliteDataAccess _sqlliteDataAcces;        
+        private ISqliteDataAccess _sqlliteDataAcces;
+
+        public List<TransactionFullModel> SearchTransactionFull(string keyword)
+        {
+            using (IDbConnection cnn = new SQLiteConnection(_sqlliteDataAcces.GetConnectionString()))
+            {
+                var p = new
+                {
+                    Keyword = keyword                    
+                };
+
+                string sql = @"SELECT TransactionFull.TransactionFullId, Title, Amount, Balance, CreationDate, TransactionFull.UserId, Users.UserId, Users.FirstName, Users.LastName,
+                                      TransactionFull.TransactionTypeId, TransactionType.Type, TransactionInfo.TransactionInfoId, 
+                                      TransactionInfo.Company, TransactionInfo.Invoice
+                                FROM  TransactionFull
+                                INNER JOIN Users ON Users.UserId = TransactionFull.UserId
+                                INNER JOIN TransactionType ON TransactionType.TransactionTypeId = TransactionFull.TransactionTypeId
+                                LEFT JOIN TransactionInfo ON TransactionInfo.TransactionFullId = TransactionFull.TransactionFullId
+                                WHERE Title LIKE @Keyword OR Amount LIKE @Keyword OR Company LIKE @Keyword OR Invoice LIKE @Keyword";
+
+                var output = cnn.Query<TransactionFullModel, UsersModel, TransactionTypeModel, TransactionInfoModel, TransactionFullModel>(sql,
+                    (transactionFullModel, usersModel, transactionTypeModel, transactionInfoModel) =>
+                    {
+                        transactionFullModel.Users = usersModel;
+                        transactionFullModel.TransactionType = transactionTypeModel;
+                        transactionFullModel.TransactionInfo = transactionInfoModel;
+
+                        return transactionFullModel;
+                    }, p, splitOn: "UserId,TransactionTypeId,TransactionInfoId").ToList();
+
+                return output;
+            }
+        }
 
         public List<TransactionFullModel> SelectTransactionFull(DateTime from, DateTime to, string filters)
         {
@@ -33,7 +65,7 @@ namespace DataAccess
                 };
 
 
-                string sql = @"SELECT TransactionFull.TransactionFullId, Title, Amount, Balance, CreationDate, TransactionFull.UserId, Users.UserId, Users.FirstName, Users.LastName,
+                string sql = @"SELECT TransactionFull.TransactionFullId, Title, Amount, Balance, CreationDate, Deleted, TransactionFull.UserId, Users.UserId, Users.FirstName, Users.LastName,
                                       TransactionFull.TransactionTypeId, TransactionType.Type, TransactionInfo.TransactionInfoId, 
                                       TransactionInfo.Company, TransactionInfo.Invoice
                                 FROM  TransactionFull
@@ -118,6 +150,22 @@ namespace DataAccess
             {
                 cnn.Execute(@"INSERT INTO TransactionInfo (Company, Invoice, TransactionFullId)  
                                   VALUES (@Company, @Invoice, @TransactionFullId);", model);
+            }
+        }
+
+        public void UpdateTransaction(int id, int update)
+        {
+            var p = new
+            {
+                Id = id,
+                Update = update
+            };
+
+            using (IDbConnection cnn = new SQLiteConnection(_sqlliteDataAcces.GetConnectionString()))
+            {
+                cnn.Execute(@"UPDATE TransactionFull 
+                              SET Deleted = @Update
+                              WHERE TransactionFullId = @Id", p);
             }
         }
     }

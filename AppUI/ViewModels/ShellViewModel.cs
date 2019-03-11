@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Media;
 
 namespace AppUI.ViewModels
@@ -48,6 +49,8 @@ namespace AppUI.ViewModels
         private UsersModel _selectedUser;
         private TransactionTypeModel _selectedTransaction;
         private string _searchTitle;
+        private TransactionFullModel _selectedTransactionFull;
+
 
         #endregion
 
@@ -83,15 +86,55 @@ namespace AppUI.ViewModels
             set { _searchTitle = value; }
         }
 
+        public TransactionFullModel SelectedTransactionFull
+        {
+            get { return _selectedTransactionFull; }
+            set { _selectedTransactionFull = value; }
+        }
+
         #endregion
 
         #region Methods for data acces
 
-        private void GetTransactions(string titleSearch = null)
+        private void DeleteTransaction()
         {
-            string filters = $"{UseTransactionTypeFilter()} {UseUsersFilter()} {titleSearch}";
+            MessageBoxResult result = MessageBox.Show("Czy na pewno chcesz wykonać tę operację?", "", MessageBoxButton.YesNo, MessageBoxImage.Question);
+
+            if(result == MessageBoxResult.Yes)
+            {
+                int id = SelectedTransactionFull.TransactionFullId;
+                int update = 1;
+                
+                if(SelectedTransactionFull.Deleted == 0)
+                {
+                    update = 1;
+                }
+                else if(SelectedTransactionFull.Deleted == 1)
+                {
+                    update = 0;
+                }
+
+                _queries.UpdateTransaction(id, update);
+            }
+        }
+
+        private void SearchTransactions()
+        {
+            string keyword = $"%{_searchTitle}%";
+            List<TransactionFullModel> model = new List<TransactionFullModel>(_queries.SearchTransactionFull(keyword));
+            PrepareTransactions(model);
+        }
+
+        private void GetTransactions()
+        {
+            string filters = $"{UseTransactionTypeFilter()} {UseUsersFilter()}";
             
             List<TransactionFullModel> model = new List<TransactionFullModel>(_queries.SelectTransactionFull(FromDate, ToDate, filters));
+            PrepareTransactions(model);          
+        }
+        
+        private void PrepareTransactions(List<TransactionFullModel> model)
+        {
             model.Reverse();
 
             if (TransactionFull == null)
@@ -105,23 +148,13 @@ namespace AppUI.ViewModels
 
             foreach (var item in model)
             {
-                if(item.TransactionType.Type != "Wpłata")              
+                if (item.TransactionType.Type != "Wpłata")
                 {
                     string amount = $"-{item.Amount}";
                     item.Amount = Convert.ToDecimal(amount);
                 }
                 if (item.TransactionInfo == null) item.TransactionInfo = new TransactionInfoModel();
                 TransactionFull.Add(item);
-            }            
-        }
-
-        public void UseTitleFilter()
-        {
-            if(_searchTitle != null)
-            {
-                string filter = $"AND Title LIKE '%{_searchTitle}%'";
-
-                GetTransactions(filter);
             }
         }
 
@@ -181,9 +214,19 @@ namespace AppUI.ViewModels
 
         #region Methods
 
+        public void DeleteBtn()
+        {
+            DeleteTransaction();
+        }
+
         public void RefreshBtn()
         {
             GetTransactions();
+        }
+
+        public void Search()
+        {
+            SearchTransactions();
         }
 
         public void ShowAddTransactionWindow()
@@ -194,10 +237,9 @@ namespace AppUI.ViewModels
                 Users = Users,
                 TransactionType = this.TransactionType
             };
-
            
             WindowManager wm = new WindowManager();
-            wm.ShowWindow(new AddTransactionViewModel(model, _queries));
+            wm.ShowDialog(new AddTransactionViewModel(model, _queries));            
         }
         
         #endregion
