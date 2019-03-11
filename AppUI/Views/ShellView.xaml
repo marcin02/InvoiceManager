@@ -9,8 +9,13 @@
         Title="Menedżer transakcji" Height="1000" Width="1050" WindowStartupLocation="CenterScreen">
     <Window.Resources>
         <converter:IsNotNullConverter x:Key="IsNotNull"/>
-        <converter:BoolToVisibilityConverter x:Key="IsVisible"/>            
+        <converter:BoolToVisibilityConverter x:Key="IsVisible"/>
 
+        <Style x:Key="DeleteUndoButton" BasedOn="{StaticResource RedButton}" TargetType="Button">
+            <Setter Property="Content" Value="USUŃ"/>
+            <Setter Property="Margin" Value="5,0,5,0"/>
+        </Style>
+        
         <Style TargetType="{x:Type DatePicker}">
             <Setter Property="BorderThickness" Value="0"/>
             <Setter Property="Foreground" Value="{StaticResource SidePanelFontColor}"/>
@@ -117,6 +122,13 @@
                 </Setter.Value>
             </Setter>
         </Style>
+        <Style x:Key="IsDeleted" TargetType="TextBlock">
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding Deleted}" Value="1">
+                    <Setter Property="TextDecorations" Value="Strikethrough"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
         <Style TargetType="TextBlock">
             <Setter Property="Foreground" Value="{StaticResource SidePanelFontColor}"/>
             <Setter Property="FontFamily" Value="Lato"/>
@@ -124,7 +136,7 @@
             <Setter Property="HorizontalAlignment" Value="Center"/>
             <Setter Property="Margin" Value="0,0,0,10"/>
         </Style>       
-        <Style x:Key="AdditionalInfoStyle" TargetType="TextBlock">
+        <Style x:Key="AdditionalInfoStyle" BasedOn="{StaticResource IsDeleted}" TargetType="TextBlock">
             <Setter Property="FontSize" Value="10.5"/>
             <Setter Property="Foreground" Value="#FFB4B4B6"/>
         </Style>
@@ -142,7 +154,7 @@
                 </MultiDataTrigger>
             </Style.Triggers>
         </Style>
-        <Style x:Key="TextBlockTrigger" TargetType="TextBlock">
+        <Style x:Key="TextBlockTrigger" BasedOn="{StaticResource IsDeleted}" TargetType="TextBlock">
             <Setter Property="Foreground" Value="#E83C3C"/>
             <Style.Triggers>
                 <DataTrigger Binding="{Binding TransactionType.Type}" Value="Wpłata">
@@ -176,11 +188,6 @@
             <Setter Property="BorderThickness" Value="0,1,1,1"/>
             <Setter Property="BorderBrush" Value="{StaticResource DataGridBorder}"/>
             <Setter Property="Margin" Value="0,0,0,5"/>
-            <Style.Triggers>
-                <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Background" Value="{StaticResource DataGridBackground2}"/>
-                </Trigger>
-            </Style.Triggers>
         </Style>
         <Style x:Key="RowStyle" TargetType="DataGridRow">
             <Setter Property="Foreground" Value="#FF767B9F"/>
@@ -195,16 +202,14 @@
                     <Setter Property="BorderBrush" Value="Transparent"/>
                     <Setter Property="Foreground" Value="#FF767B9F"/>
                 </Trigger>
-                <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Background" Value="#FFE2EBF3"/>
-                </Trigger>
             </Style.Triggers>
         </Style>
-        <Style x:Key="CellStyle" TargetType="DataGridCell">
+        <Style x:Key="CellStyle" TargetType="{x:Type DataGridCell}">
             <Setter Property="VerticalAlignment" Value="Center"/>
             <Setter Property="TextBlock.TextAlignment" Value="Center"/>
             <Setter Property="Background" Value="White" />
             <Setter Property="Foreground" Value="#FF767B9F"/>
+            <Setter Property="TextBlock.TextDecorations" Value="Strikethrough"/>
             <Style.Triggers>
                 <Trigger Property="IsSelected" Value="True">
                     <Setter Property="Background" Value="White" />
@@ -266,22 +271,22 @@
             </StackPanel>
         </Border>
         <DockPanel Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="0" Background="#FF242424" LastChildFill="False">
-            <Button x:Name="ShowAddTransactionWindow" Style="{StaticResource GreenButton}" Margin="8" Content="DODAJ WPIS"/>
+            <Button x:Name="ShowAddTransactionWindow" Style="{StaticResource GreenButton}" Width="180" Margin="8" Content="DODAJ WPIS"/>
             <TextBox Margin="10" MinWidth="205" MaxLength="50" Style="{StaticResource WatermarkedTextbox}"/>
-            <Button x:Name="UseTitleFilter" Content="SZUKAJ" Width="100" Style="{StaticResource BlueButton}" />
+            <Button x:Name="Search" Content="SZUKAJ" Width="100" Style="{StaticResource BlueButton}" />
             <Button x:Name="Print" Content="DRUKUJ" Width="100" Style="{StaticResource BlueButton}" DockPanel.Dock="Right" Margin="0,0,10,0"/>
         </DockPanel>
         
         <ScrollViewer Grid.Column="1" Grid.Row="1" VerticalScrollBarVisibility="Auto">
-            <DataGrid x:Name="TransactionFull" Style="{StaticResource DataGridStyle}" ItemsSource="{Binding Path=TransactionFull, UpdateSourceTrigger=PropertyChanged}">
-                <DataGrid.Columns>                  
-                    <DataGridTextColumn Header="ID" Binding="{Binding TransactionFullId}"/>
-                    <DataGridTextColumn Header="DATA" Binding="{Binding Date}"/>
+            <DataGrid x:Name="TransactionFull" Style="{StaticResource DataGridStyle}" SelectedItem="{Binding Path=SelectedTransactionFull, Mode=OneWayToSource}" ItemsSource="{Binding Path=TransactionFull, UpdateSourceTrigger=PropertyChanged}">
+                <DataGrid.Columns>
+                    <DataGridTextColumn x:Name="TransactionId" Header="ID" ElementStyle="{StaticResource IsDeleted}" Binding="{Binding TransactionFullId}"/>
+                    <DataGridTextColumn Header="DATA" ElementStyle="{StaticResource IsDeleted}" Binding="{Binding Date}"/>
                     <DataGridTemplateColumn Header="TYTUŁ I DODATKOWE INFORMACJE">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>                                
                                 <StackPanel Margin="10">
-                                    <TextBlock Text="{Binding Title}"/>
+                                    <TextBlock Text="{Binding Title}" Style="{StaticResource IsDeleted}"/>
                                     <DockPanel Style="{StaticResource AdditonalInfo}">
                                         <TextBlock Style="{StaticResource AdditionalInfoStyle}" Text="NAZWA FIRMY:"/>
                                         <TextBlock Style="{StaticResource AdditionalInfoStyle}" Margin="4,0,50,0" Text="{Binding TransactionInfo.Company}"/>
@@ -293,9 +298,38 @@
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
                     <DataGridTextColumn Header="KWOTA" Binding="{Binding Amount}" ElementStyle="{StaticResource TextBlockTrigger}" />
-                    <DataGridTextColumn Header="SALDO" Binding="{Binding Balance}"/>
-                    <DataGridTextColumn Header="TYP TRANSAKCJI" Binding="{Binding TransactionType.Type}"/>
-                    <DataGridTextColumn Header="UŻYTKOWNIK" Binding="{Binding Users.FullName}"/>
+                    <DataGridTextColumn Header="SALDO" Binding="{Binding Balance}" ElementStyle="{StaticResource IsDeleted}"/>
+                    <DataGridTextColumn Header="TYP TRANSAKCJI" Binding="{Binding TransactionType.Type}" ElementStyle="{StaticResource IsDeleted}"/>
+                    <DataGridTextColumn Header="UŻYTKOWNIK" Binding="{Binding Users.FullName}" ElementStyle="{StaticResource IsDeleted}"/>
+                    <DataGridTemplateColumn Header="USUŃ/PRZYWRÓĆ">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <Control Focusable="False">
+                                    <Control.Template>
+                                        <ControlTemplate>
+                                            <ControlTemplate.Resources>
+                                                <Style x:Key="RedStyle" TargetType="Button" BasedOn="{StaticResource RedButton}">
+                                                    <Setter Property="Content" Value="USUŃ WPIS"/>                                                    
+                                                </Style>
+                                                <Style x:Key="GreenStyle" TargetType="Button" BasedOn="{StaticResource GreenButton}">
+                                                    <Setter Property="Content" Value="PRZYWRÓĆ WPIS"/>
+                                                </Style>
+                                            </ControlTemplate.Resources>
+                                            <Button x:Name="DeleteUndoButton" Style="{StaticResource RedStyle}" Width="120" Margin="5,0,5,0"/>
+                                            <ControlTemplate.Triggers>
+                                                <DataTrigger Binding="{Binding Deleted}" Value="0">
+                                                    <Setter TargetName="DeleteUndoButton" Property="Style" Value="{StaticResource RedStyle}"/>
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding Deleted}" Value="1">
+                                                    <Setter TargetName="DeleteUndoButton" Property="Style" Value="{StaticResource GreenStyle}"/>
+                                                </DataTrigger>
+                                            </ControlTemplate.Triggers>
+                                        </ControlTemplate>                                        
+                                    </Control.Template>
+                                </Control>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
                 </DataGrid.Columns>                                    
             </DataGrid>
         </ScrollViewer>

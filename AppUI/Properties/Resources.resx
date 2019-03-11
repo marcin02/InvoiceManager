@@ -124,4 +124,10 @@
   <data name="iconfinder_menu_alt_134216" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\resources\iconfinder_menu-alt_134216.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="icons8_cancel_48" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\icons8-cancel-48.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="undo_button" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\undo-button.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
 </root>

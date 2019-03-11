@@ -28,7 +28,7 @@
                 <BeginStoryboard>
                     <Storyboard>
                         <ColorAnimation To="{StaticResource RedButtonOnMouseOver}" Duration="0:0:0.3" Storyboard.TargetProperty="Background.Color"/>
-                    </Storyboard>
+                    </Storyboard>                    
                 </BeginStoryboard>
             </EventTrigger>
             <EventTrigger RoutedEvent="MouseLeave">
@@ -39,7 +39,7 @@
                 </BeginStoryboard>
             </EventTrigger>
         </Style.Triggers>
-    </Style>
+    </Style>    
 
     <Style x:Key="BlueButton" TargetType="Button" BasedOn="{StaticResource ButtonBase}">
         <Setter Property="Background" Value="{StaticResource BlueButtonBackground}"/>
