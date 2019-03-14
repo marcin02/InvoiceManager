@@ -99,10 +99,10 @@
                                 Background="{TemplateBinding Background}">
                             <Grid Margin="0,0,5,0">
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="auto"/>
-                                    <ColumnDefinition Width="auto"/>
+                                    <ColumnDefinition />
+                                    <ColumnDefinition />
                                 </Grid.ColumnDefinitions>
-                                <Image Grid.Column="0" Margin="2,0,0,0" Source="/InvoiceManager;component/Resources/iconfinder_icon-111-search_314807.png"/>
+                                <Image Grid.Column="0" Source="/InvoiceManager;component/Resources/iconfinder_icon-111-search_314807.png"/>
                                 <TextBlock Grid.Column="1" Text="Przeszukaj wyniki po tytułach..." Background="{TemplateBinding Background}">
                                     <TextBlock.Visibility>
                                         <MultiBinding Converter="{StaticResource IsVisible}">

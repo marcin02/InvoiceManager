@@ -31,7 +31,8 @@ namespace AppUI.ViewModels
 
         #region Private properties
 
-        private decimal _amount;
+        private string _amount;
+        private decimal _amountDecimal;
         private bool _canExecute = true;
         private bool _canValidate = false;
         private string _company;
@@ -53,10 +54,10 @@ namespace AppUI.ViewModels
 
         #region Public properties
 
-        public decimal Amount
+        public string Amount
         {
             get { return _amount; }
-            set { _amount = value; }
+            set { _amount = value; if(!string.IsNullOrWhiteSpace(_amount))_amountDecimal = Convert.ToDecimal(_amount); }
         }
         public bool AmountIsEnabled
         {
@@ -150,8 +151,8 @@ namespace AppUI.ViewModels
 
         #endregion
 
-        #region Methods     
-
+        #region Methods            
+       
         private void GetLenghtTitle()
         {
             if (_title != null)
@@ -205,12 +206,12 @@ namespace AppUI.ViewModels
 
             if(SelectedTransactionType.Type == "Wpłata")
             {
-                b = _addTransactionModel.Balance + _amount;
+                b = _addTransactionModel.Balance + _amountDecimal;
                 return b;
             }
             else
             {
-                b = _addTransactionModel.Balance - _amount;
+                b = _addTransactionModel.Balance - _amountDecimal;
                 return b;
             }
         }
@@ -235,7 +236,7 @@ namespace AppUI.ViewModels
             {
                 InsertTransactionModel model = new InsertTransactionModel
                 {
-                    Amount = _amount,
+                    Amount = _amountDecimal,
                     Balance = GetAndSetBalance(),
                     Title = _title,
                     TransactionTypeId = _selectedTransactionType.TransactionTypeId,
@@ -323,7 +324,7 @@ namespace AppUI.ViewModels
                             break;
 
                         case "Amount":
-                            if (Amount <= 0)
+                            if (_amountDecimal <= 0)
                             {
                                 _canExecute = false;
                                 return resultNOK;
