@@ -1,6 +1,5 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:local="clr-namespace:AppUI.ResourceDictionaries">
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
     <SolidColorBrush x:Key="SidePanelBackground1" Color="#FF363B4B"/>
     <SolidColorBrush x:Key="SidePanelBackground2" Color="#FF31343E"/>

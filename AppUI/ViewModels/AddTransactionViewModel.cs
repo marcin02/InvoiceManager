@@ -17,14 +17,10 @@ namespace AppUI.ViewModels
     {
         #region Constructor
 
-        public AddTransactionViewModel(AddTransactionModel addTransactionModel, IQueries queries)
+        public AddTransactionViewModel(IQueries queries, AddTransactionModel addTransactionModel)
         {
             _queries = queries;
             _addTransactionModel = addTransactionModel;
-            Users = addTransactionModel.Users;
-            TransactionType = addTransactionModel.TransactionType;
-            Users.RemoveAt(0);
-            TransactionType.RemoveAt(0);
         }
 
         #endregion
@@ -138,8 +134,8 @@ namespace AppUI.ViewModels
 
         #region Models and interfaces
 
-        private AddTransactionModel _addTransactionModel;
-        private IQueries _queries;
+        private readonly AddTransactionModel _addTransactionModel;
+        private readonly IQueries _queries;
 
         #endregion
 
@@ -148,10 +144,17 @@ namespace AppUI.ViewModels
         public BindableCollection<UsersModel> Users { get; set; }
         public BindableCollection<TransactionTypeModel> TransactionType { get; set; }
 
-
         #endregion
 
         #region Methods            
+
+        public void PrepareCollections()
+        {            
+            Users = _addTransactionModel.Users;
+            TransactionType = _addTransactionModel.TransactionType;
+            Users.RemoveAt(0);
+            TransactionType.RemoveAt(0);
+        }
        
         private void GetLenghtTitle()
         {

@@ -1,4 +1,5 @@
-﻿using AppUI.Interfaces;
+﻿using AppUI.Factories;
+using AppUI.Interfaces;
 using AppUI.Models;
 using AppUI.ViewModels;
 using Caliburn.Micro;
@@ -43,6 +44,7 @@ namespace AppUI
 
             _container.PerRequest<ISqliteDataAccess, SqliteDataAccess>();
             _container.PerRequest<IQueries, Queries>();
+            _container.PerRequest<IAddTransactionFactory, AddTransactionFactory>();
 
             GetType().Assembly.GetTypes()
                 .Where(type => type.IsClass)

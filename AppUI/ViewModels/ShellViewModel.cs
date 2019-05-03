@@ -14,23 +14,25 @@ using System.Windows.Media;
 
 namespace AppUI.ViewModels
 {
-    public class ShellViewModel : Screen
+    public class ShellViewModel : Conductor<object>
     {
         #region Constructor
 
-        public ShellViewModel(IQueries queries)
+        public ShellViewModel(IQueries queries, IWindowManager wm, IAddTransactionFactory addTransactionFactory)
         {
             _queries = queries;
-            GetTransactions();
-            GetTransactionType();
-            GetUsers();
+            _addTransactionFactory = addTransactionFactory;
+            _wm = wm;
+            StartUp();
         }
 
         #endregion
 
-        #region Interfaces
+        #region Interfaces and viewmodels
 
-        private IQueries _queries;
+        private readonly IQueries _queries;
+        private readonly IWindowManager _wm;
+        private readonly IAddTransactionFactory _addTransactionFactory;
 
         #endregion
 
@@ -113,7 +115,6 @@ namespace AppUI.ViewModels
                 {
                     update = 0;
                     SelectedTransactionFull.Deleted = update;
-
                 }
 
                 _queries.UpdateTransaction(id, update);
@@ -127,6 +128,13 @@ namespace AppUI.ViewModels
             PrepareTransactions(model);
         }
 
+        private void StartUp()
+        {
+            GetTransactions();
+            GetTransactionType();
+            GetUsers();
+        }
+
         private void GetTransactions()
         {
             string filters = $"{UseTransactionTypeFilter()} {UseUsersFilter()}";
@@ -135,30 +143,7 @@ namespace AppUI.ViewModels
             PrepareTransactions(model);          
         }
         
-        private void PrepareTransactions(List<TransactionFullModel> model)
-        {
-            model.Reverse();
-
-            if (TransactionFull == null)
-            {
-                TransactionFull = new BindableCollection<TransactionFullModel>();
-            }
-            else
-            {
-                TransactionFull.Clear();
-            }
-
-            foreach (var item in model)
-            {
-                if (item.TransactionType.Type != "Wpłata")
-                {
-                    string amount = $"-{item.Amount}";
-                    item.Amount = Convert.ToDecimal(amount);
-                }
-                if (item.TransactionInfo == null) item.TransactionInfo = new TransactionInfoModel();
-                TransactionFull.Add(item);
-            }
-        }
+        
 
         private string UseTransactionTypeFilter()
         {
@@ -222,6 +207,31 @@ namespace AppUI.ViewModels
             TransactionFull.Refresh();
         }
 
+        private void PrepareTransactions(List<TransactionFullModel> model)
+        {
+            model.Reverse();
+
+            if (TransactionFull == null)
+            {
+                TransactionFull = new BindableCollection<TransactionFullModel>();
+            }
+            else
+            {
+                TransactionFull.Clear();
+            }
+
+            foreach (var item in model)
+            {
+                if (item.TransactionType.Type != "Wpłata")
+                {
+                    string amount = $"-{item.Amount}";
+                    item.Amount = Convert.ToDecimal(amount);
+                }
+                if (item.TransactionInfo == null) item.TransactionInfo = new TransactionInfoModel();
+                TransactionFull.Add(item);
+            }
+        }
+
         public void RefreshBtn()
         {
             GetTransactions();
@@ -240,9 +250,12 @@ namespace AppUI.ViewModels
                 Users = Users,
                 TransactionType = this.TransactionType
             };
-           
-            WindowManager wm = new WindowManager();
-            wm.ShowDialog(new AddTransactionViewModel(model, _queries));
+
+            // WindowManager wm = new WindowManager();
+            //   _addTransactionViewModel.ActivateWith(model);
+            var vm = _addTransactionFactory.Create(model);
+            vm.PrepareCollections();
+            _wm.ShowDialog(vm);
             GetTransactions();
         }
         

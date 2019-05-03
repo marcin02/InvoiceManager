@@ -97,8 +97,9 @@
     <Compile Include="Bootstrapper.cs" />
     <Compile Include="Converters\BoolToVisibilityConverter.cs" />
     <Compile Include="Converters\IsNotNullConverter.cs" />
+    <Compile Include="Factories\AddTransactionFactory.cs" />
+    <Compile Include="Interfaces\IAddTransactionFactory.cs" />
     <Compile Include="Models\AddTransactionModel.cs" />
-    <Compile Include="Interfaces\IAddTransactionModel.cs" />
     <Compile Include="ViewModels\AddTransactionViewModel.cs" />
     <Compile Include="ViewModels\ShellViewModel.cs" />
     <Compile Include="Views\AddTransactionView.xaml.cs">
@@ -182,6 +183,7 @@
   <ItemGroup>
     <Resource Include="Resources\undo-button.png" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\System.Data.SQLite.Core.1.0.109.2\build\net46\System.Data.SQLite.Core.targets" Condition="Exists('..\packages\System.Data.SQLite.Core.1.0.109.2\build\net46\System.Data.SQLite.Core.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
