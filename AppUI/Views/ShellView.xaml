@@ -220,7 +220,7 @@
                     <Setter Property="BorderBrush" Value="Transparent" />
                     <Setter Property="Foreground" Value="#FF767B9F"/>
                 </Trigger>
-                <DataTrigger Binding="{Binding ElementName=TransactionFull, Path=RowBackground}" Value="#FFE2EBF3">
+                <DataTrigger Binding="{Binding ElementName=TransactionFullDisplay, Path=RowBackground}" Value="#FFE2EBF3">
                     <Setter Property="Background" Value="#FFE2EBF3"/>
                     <Setter Property="TextBlock.Background" Value="#FFE2EBF3"/>
                 </DataTrigger>
@@ -297,7 +297,7 @@
         </DockPanel>
         
         <ScrollViewer Grid.Column="1" Grid.Row="1" VerticalScrollBarVisibility="Auto">
-            <DataGrid x:Name="TransactionFull" Style="{StaticResource DataGridStyle}" SelectedItem="{Binding Path=SelectedTransactionFull, Mode=OneWayToSource}" ItemsSource="{Binding Path=TransactionFull, UpdateSourceTrigger=PropertyChanged}">
+            <DataGrid x:Name="TransactionFullDisplay"  Style="{StaticResource DataGridStyle}" SelectedItem="{Binding Path=SelectedTransactionFull, Mode=OneWayToSource}" ItemsSource="{Binding Path=TransactionFullDisplay, UpdateSourceTrigger=PropertyChanged}">
                 <DataGrid.Columns>
                     <DataGridTextColumn x:Name="TransactionId" Header="ID" ElementStyle="{StaticResource IsDeleted}" Binding="{Binding TransactionFullId}"/>
                     <DataGridTextColumn Header="DATA" ElementStyle="{StaticResource IsDeleted}" Binding="{Binding Date}"/>

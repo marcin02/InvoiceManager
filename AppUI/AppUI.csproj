@@ -97,6 +97,7 @@
     <Compile Include="Bootstrapper.cs" />
     <Compile Include="Converters\BoolToVisibilityConverter.cs" />
     <Compile Include="Converters\IsNotNullConverter.cs" />
+    <Compile Include="Enums\TransactionTypes.cs" />
     <Compile Include="Factories\AddTransactionFactory.cs" />
     <Compile Include="Interfaces\IAddTransactionFactory.cs" />
     <Compile Include="Models\AddTransactionModel.cs" />

@@ -54,7 +54,7 @@ namespace DataAccess
             }
         }
 
-        public List<TransactionFullModel> SelectTransactionFull(DateTime from, DateTime to, string filters)
+        public List<TransactionFullModel> SelectTransactionFull(DateTime from, DateTime to)
         {
             using (IDbConnection cnn = new SQLiteConnection(_sqlliteDataAcces.GetConnectionString()))
             {
@@ -63,7 +63,6 @@ namespace DataAccess
                     From = from,
                     To = to
                 };
-
 
                 string sql = @"SELECT TransactionFull.TransactionFullId, Title, Amount, Balance, CreationDate, Deleted, TransactionFull.UserId, Users.UserId, Users.FirstName, Users.LastName,
                                       TransactionFull.TransactionTypeId, TransactionType.Type, TransactionInfo.TransactionInfoId, 
@@ -74,9 +73,7 @@ namespace DataAccess
                                 LEFT JOIN TransactionInfo ON TransactionInfo.TransactionFullId = TransactionFull.TransactionFullId
                                 WHERE date(CreationDate) >= date(@From) AND date(CreationDate) <= date(@To)";
 
-                string filteredSql = $"{sql} {filters}";
-
-                var output = cnn.Query<TransactionFullModel, UsersModel, TransactionTypeModel, TransactionInfoModel, TransactionFullModel>(filteredSql,
+                var output = cnn.Query<TransactionFullModel, UsersModel, TransactionTypeModel, TransactionInfoModel, TransactionFullModel>(sql,
                     (transactionFullModel, usersModel, transactionTypeModel, transactionInfoModel) => 
                     { transactionFullModel.Users = usersModel;
                       transactionFullModel.TransactionType = transactionTypeModel;

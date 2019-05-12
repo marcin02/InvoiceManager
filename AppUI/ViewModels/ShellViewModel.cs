@@ -39,6 +39,7 @@ namespace AppUI.ViewModels
         #region Collections
 
         public BindableCollection<TransactionFullModel> TransactionFull { get; set; }
+        public BindableCollection<TransactionFullModel> TransactionFullDisplay { get; set; }
         public BindableCollection<TransactionTypeModel> TransactionType { get; set; }
         public BindableCollection<UsersModel> Users { get; set; }
 
@@ -66,7 +67,7 @@ namespace AppUI.ViewModels
         public TransactionTypeModel SelectedTransaction
         {
             get { return _selectedTransaction; }
-            set { _selectedTransaction = value; GetTransactions(); }
+            set { _selectedTransaction = value; UseTransactionTypeFilter(); }
         }
 
         public UsersModel SelectedUser
@@ -137,27 +138,41 @@ namespace AppUI.ViewModels
 
         private void GetTransactions()
         {
-            string filters = $"{UseTransactionTypeFilter()} {UseUsersFilter()}";
-            
-            List<TransactionFullModel> model = new List<TransactionFullModel>(_queries.SelectTransactionFull(FromDate, ToDate, filters));
+            List<TransactionFullModel> model = new List<TransactionFullModel>(_queries.SelectTransactionFull(FromDate, ToDate));
             PrepareTransactions(model);          
-        }
+        }      
         
-        
-
-        private string UseTransactionTypeFilter()
+        private void UseTransactionTypeFilter()
         {
             if (_selectedTransaction != null)
             {
                 if (_selectedTransaction.Type != "Wszystkie")
                 {
-                    string filter = $"AND TransactionType.TransactionTypeId = '{SelectedTransaction.TransactionTypeId}'";
-
-                    return filter;
-                } 
+                    List<TransactionFullModel> tfm = new List<TransactionFullModel>(TransactionFull as BindableCollection<TransactionFullModel>);
+                    tfm = tfm.Where(x => x.TransactionType.TransactionTypeId == _selectedTransaction.TransactionTypeId).ToList();
+                    TransactionFullDisplay.Clear();
+                    foreach (var item in tfm)
+                    {
+                        TransactionFullDisplay.Add(item);
+                    }
+                }
+                else
+                {
+                    Reload(TransactionFull, TransactionFullDisplay);
+                }
             }
+        }
 
-            return null;
+        private BindableCollection<T> Reload<T>(BindableCollection<T> input, BindableCollection<T> output)
+        {
+            output.Clear();
+
+            foreach (var item in input)
+            {
+                output.Add(item);
+            }
+            
+            return output;
         }
 
         private string UseUsersFilter()
@@ -214,10 +229,12 @@ namespace AppUI.ViewModels
             if (TransactionFull == null)
             {
                 TransactionFull = new BindableCollection<TransactionFullModel>();
+                TransactionFullDisplay = new BindableCollection<TransactionFullModel>();
             }
             else
             {
                 TransactionFull.Clear();
+                TransactionFullDisplay.Clear();
             }
 
             foreach (var item in model)
@@ -229,7 +246,8 @@ namespace AppUI.ViewModels
                 }
                 if (item.TransactionInfo == null) item.TransactionInfo = new TransactionInfoModel();
                 TransactionFull.Add(item);
-            }
+                TransactionFullDisplay.Add(item);
+            }      
         }
 
         public void RefreshBtn()

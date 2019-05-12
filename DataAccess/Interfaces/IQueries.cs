@@ -7,7 +7,7 @@ namespace DataAccess.Interfaces
     public interface IQueries
     {
         List<TransactionFullModel> SearchTransactionFull(string keyword);
-        List<TransactionFullModel> SelectTransactionFull(DateTime from, DateTime to,string filters);
+        List<TransactionFullModel> SelectTransactionFull(DateTime from, DateTime to);
         List<TransactionTypeModel> SelectTransactionType();
         List<UsersModel> SelectUsers();
         int SelectLastTransactionFullId();
