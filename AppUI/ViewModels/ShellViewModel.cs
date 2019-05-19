@@ -67,13 +67,13 @@ namespace AppUI.ViewModels
         public TransactionTypeModel SelectedTransaction
         {
             get { return _selectedTransaction; }
-            set { _selectedTransaction = value; UseTransactionTypeFilter(); }
+            set { _selectedTransaction = value; Filter(SearchTitle); }
         }
 
         public UsersModel SelectedUser
         {
             get { return _selectedUser; }
-            set { _selectedUser = value; GetTransactions(); }
+            set { _selectedUser = value; Filter(SearchTitle); }
         }
 
         public DateTime ToDate
@@ -85,7 +85,7 @@ namespace AppUI.ViewModels
         public string SearchTitle
         {
             get { return _searchTitle; }
-            set { _searchTitle = value; }
+            set { _searchTitle = value; Filter(SearchTitle); }
         }
 
         public TransactionFullModel SelectedTransactionFull
@@ -120,15 +120,8 @@ namespace AppUI.ViewModels
 
                 _queries.UpdateTransaction(id, update);
             }
-        }
-
-        private void SearchTransactions()
-        {
-            string keyword = $"%{_searchTitle}%";
-            List<TransactionFullModel> model = new List<TransactionFullModel>(_queries.SearchTransactionFull(keyword));
-            PrepareTransactions(model);
-        }
-
+        }       
+    
         private void StartUp()
         {
             GetTransactions();
@@ -140,61 +133,13 @@ namespace AppUI.ViewModels
         {
             List<TransactionFullModel> model = new List<TransactionFullModel>(_queries.SelectTransactionFull(FromDate, ToDate));
             PrepareTransactions(model);          
-        }      
-        
-        private void UseTransactionTypeFilter()
-        {
-            if (_selectedTransaction != null)
-            {
-                if (_selectedTransaction.Type != "Wszystkie")
-                {
-                    List<TransactionFullModel> tfm = new List<TransactionFullModel>(TransactionFull as BindableCollection<TransactionFullModel>);
-                    tfm = tfm.Where(x => x.TransactionType.TransactionTypeId == _selectedTransaction.TransactionTypeId).ToList();
-                    TransactionFullDisplay.Clear();
-                    foreach (var item in tfm)
-                    {
-                        TransactionFullDisplay.Add(item);
-                    }
-                }
-                else
-                {
-                    Reload(TransactionFull, TransactionFullDisplay);
-                }
-            }
         }
-
-        private BindableCollection<T> Reload<T>(BindableCollection<T> input, BindableCollection<T> output)
-        {
-            output.Clear();
-
-            foreach (var item in input)
-            {
-                output.Add(item);
-            }
-            
-            return output;
-        }
-
-        private string UseUsersFilter()
-        {
-            if(_selectedUser != null)
-            {
-                if(_selectedUser.FullName != "Wszyscy użytkownicy")
-                {
-                    string filter = $"AND Users.UserId = '{_selectedUser.UserId}'";
-
-                    return filter;
-                }
-            }
-
-            return null;
-        }         
-
+                            
         private void GetTransactionType()
         {
             List<TransactionTypeModel> model = new List<TransactionTypeModel>(_queries.SelectTransactionType());
             TransactionType = new BindableCollection<TransactionTypeModel>();
-            TransactionType.Add(new TransactionTypeModel { Type = "Wszystkie" });
+            TransactionType.Add(new TransactionTypeModel { Type = "Wszystkie", TransactionTypeId = 0 });
             foreach (var item in model)
             {
                 TransactionType.Add(item);
@@ -205,7 +150,7 @@ namespace AppUI.ViewModels
         {
             List<UsersModel> model = new List<UsersModel>(_queries.SelectUsers());
             Users = new BindableCollection<UsersModel>();
-            Users.Add(new UsersModel { FirstName = "Wszyscy", LastName= "użytkownicy" });
+            Users.Add(new UsersModel { FirstName = "Wszyscy", LastName= "użytkownicy", UserId = 0});
             foreach (var item in model)
             {
                 Users.Add(item);
@@ -215,6 +160,54 @@ namespace AppUI.ViewModels
         #endregion
 
         #region Methods
+
+        private BindableCollection<T> Reload<T>(BindableCollection<T> input, BindableCollection<T> output)
+        {
+            output.Clear();
+
+            foreach (var item in input)
+            {
+                output.Add(item);
+            }
+
+            return output;
+        }
+
+        private void Filter(string searchTextBox)
+        {
+            if (_selectedTransaction != null && _selectedUser != null)
+            {
+                List<TransactionFullModel> displayed = new List<TransactionFullModel>(TransactionFull as BindableCollection<TransactionFullModel>);
+                if (_selectedUser.UserId != 0 && SelectedTransaction.TransactionTypeId != 0)
+                {
+                    displayed = displayed.Where(x => x.TransactionType.TransactionTypeId == _selectedTransaction.TransactionTypeId && x.Users.UserId == _selectedUser.UserId).ToList();
+                }
+                else if (_selectedUser.UserId == 0 && SelectedTransaction.TransactionTypeId == 0)
+                {
+                    Reload(TransactionFull, TransactionFullDisplay);
+                }
+                else if (_selectedUser.UserId != 0 && SelectedTransaction.TransactionTypeId == 0)
+                {
+                    displayed = displayed.Where(x => x.Users.UserId == _selectedUser.UserId).ToList();
+                }
+                else if (_selectedUser.UserId == 0 && SelectedTransaction.TransactionTypeId != 0)
+                {
+                    displayed = displayed.Where(x => x.TransactionType.TransactionTypeId == _selectedTransaction.TransactionTypeId).ToList();
+                }
+
+                if(!String.IsNullOrWhiteSpace(searchTextBox))
+                {
+                    displayed = displayed.FindAll(x => x.Title.Contains(SearchTitle)).ToList();
+                }
+
+                TransactionFullDisplay.Clear();
+
+                foreach (var item in displayed)
+                {
+                    TransactionFullDisplay.Add(item);
+                }
+            }
+        }  
 
         public void DeleteBtn()
         {
@@ -255,11 +248,6 @@ namespace AppUI.ViewModels
             GetTransactions();
         }
 
-        public void Search()
-        {
-            SearchTransactions();
-        }
-
         public void ShowAddTransactionWindow()
         {
             AddTransactionModel model = new AddTransactionModel
@@ -269,8 +257,6 @@ namespace AppUI.ViewModels
                 TransactionType = this.TransactionType
             };
 
-            // WindowManager wm = new WindowManager();
-            //   _addTransactionViewModel.ActivateWith(model);
             var vm = _addTransactionFactory.Create(model);
             vm.PrepareCollections();
             _wm.ShowDialog(vm);
