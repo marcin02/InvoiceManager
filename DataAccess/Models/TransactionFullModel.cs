@@ -19,5 +19,6 @@ namespace DataAccess.Models
         public UsersModel Users { get; set; }
         public TransactionTypeModel TransactionType { get; set; }
         public TransactionInfoModel TransactionInfo { get; set; }
+        public ReportNumberModel ReportNumber { get; set; }
     }
 }

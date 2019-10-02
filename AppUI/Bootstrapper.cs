@@ -43,7 +43,7 @@ namespace AppUI
                 .Singleton<IEventAggregator, EventAggregator>();
 
             _container.PerRequest<ISqliteDataAccess, SqliteDataAccess>();
-            _container.PerRequest<IQueries, Queries>();
+            _container.PerRequest<IQueries, QueriesProcessor>();
             _container.PerRequest<IAddTransactionFactory, AddTransactionFactory>();
 
             GetType().Assembly.GetTypes()

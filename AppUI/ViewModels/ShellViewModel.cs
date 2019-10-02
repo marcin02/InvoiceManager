@@ -118,7 +118,7 @@ namespace AppUI.ViewModels
                     SelectedTransactionFull.Deleted = update;
                 }
 
-                _queries.UpdateTransaction(id, update);
+                _queries.UpdateTransaction(update, id);
             }
         }       
     

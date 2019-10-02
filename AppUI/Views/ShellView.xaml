@@ -300,6 +300,7 @@
                 <DataGrid.Columns>
                     <DataGridTextColumn x:Name="TransactionId" Header="ID" ElementStyle="{StaticResource IsDeleted}" Binding="{Binding TransactionFullId}"/>
                     <DataGridTextColumn Header="DATA" ElementStyle="{StaticResource IsDeleted}" Binding="{Binding Date}"/>
+                    <DataGridTextColumn Header="NUMER RK" MinWidth="100" ElementStyle="{StaticResource IsDeleted}" Binding="{Binding ReportNumber.Number}"/>
                     <DataGridTemplateColumn Header="TYTUŁ I DODATKOWE INFORMACJE">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>                                
